@@ -1,0 +1,10 @@
+version: '3.4'
+
+options:
+  verbose: true
+syncs:
+  webserver:
+    src: './'
+    sync_excludes: ['vendor', 'node_modules']
+    sync_userid: 1000
+    sync_groupid: 1000

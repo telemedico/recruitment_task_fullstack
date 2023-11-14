@@ -7,6 +7,8 @@ services:
       dockerfile: Dockerfile
     container_name: recruitment-webserver
     restart: unless-stopped
+    volumes:
+      - ./:/var/www/html:rw,cached
     ports:
       - "80:80"
     environment:

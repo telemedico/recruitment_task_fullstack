@@ -1,5 +1,13 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
+    http_client:
+        default_options:
+            timeout: 3
+        scoped_clients:
+            nbp.client:
+                base_uri: 'https://api.nbp.pl/api/exchangerates/'
+                query:
+                    format: 'json'
     secret: '%env(APP_SECRET)%'
     #csrf_protection: true
     #http_method_override: true

@@ -8,6 +8,10 @@ setupcheck:
     path: /api/setup-check
     controller: App\Controller\DefaultController::setupCheck
 
+exchange_table:
+    path: /api/exchange-rates/tables
+    controller: App\Controller\ExchangeRatesController::tables
+
 index:
     path: /{wildcard}
     defaults: {

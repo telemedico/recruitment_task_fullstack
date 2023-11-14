@@ -26,5 +26,9 @@ services:
         autowire: true
         tags: ['controller.service_arguments']
 
+    App\Http\Nbp\NbpHttpClient: ~
+    App\Http\Nbp\NbpFakeClient: ~
+    App\Http\Nbp\NbpClient: '@App\Http\Nbp\NbpHttpClient'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
