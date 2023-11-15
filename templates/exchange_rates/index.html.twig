@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+ {% block title %} Telemedi Zadanie - Exchange Rates {% endblock %}
+
+ {% block body %}
+ <div class="container">
+ 
+ <div id="exrates"></div>
+ 
+ </div>
+ 
+ {% endblock %}
+ 
+ {% block javascripts %}
+    <script>window.SERVER_DATA=JSON.parse(`{{server_data|raw}}`)
+    </script>
+    {{ encore_entry_script_tags('exrates') }}
+ {% endblock %}
