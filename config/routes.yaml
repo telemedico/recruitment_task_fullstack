@@ -5,15 +5,24 @@
 #
 
 setupcheck:
-    path: /api/setup-check
-    controller: App\Controller\DefaultController::setupCheck
+  path: /api/setup-check
+  controller: App\Controller\DefaultController::setupCheck
 
 index:
-    path: /{wildcard}
-    defaults: {
-        _controller: App\Controller\DefaultController::index
-    }
-    requirements:
-        wildcard: .*
-    # controller: App\Controller\DefaultController::index
+  path: /
+  defaults: {
+    _controller: App\Controller\DefaultController::index
+  }
+  requirements:
+    wildcard: .*
+  # controller: App\Controller\DefaultController::index
+
+# config/routes.yaml
+get_exchange_rates:
+  path: /api/exchange-rates
+  controller: App\Controller\ExchangeRatesController::getExchangeRates
+
+display_exchange_rates:
+  path: /kursy-walut
+  controller: App\Controller\ExchangeRatesController::display
 
