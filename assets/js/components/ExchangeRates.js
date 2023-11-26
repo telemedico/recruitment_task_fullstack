@@ -20,7 +20,7 @@ const ExchangeRates = () => {
         return selectedDate;
     }
 
-    const currentDate = setDateFormat(new Date('2023-11-25'));
+    const currentDate = setDateFormat(new Date());
 
     const getDateToRequest = (currentDate) => {
         let paramDate = new URLSearchParams(history.location.search).get('date');
