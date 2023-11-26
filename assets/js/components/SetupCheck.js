@@ -2,6 +2,8 @@
 
 import React, {Component} from 'react';
 import axios from 'axios';
+import Loader from "./UIControls/Loader";
+import PageTitle from "./UIControls/PageTitle";
 
 class SetupCheck extends Component {
     constructor() {
@@ -37,12 +39,10 @@ class SetupCheck extends Component {
                     <div className="container">
                         <div className="row mt-5">
                             <div className="col-md-8 offset-md-2">
-                                <h2 className="text-center"><span>This is a test</span> @ Telemedi</h2>
+                                <PageTitle title='This is a test'/>
 
                                 {loading ? (
-                                    <div className={'text-center'}>
-                                        <span className="fa fa-spin fa-spinner fa-4x"></span>
-                                    </div>
+                                    <Loader />
                                 ) : (
                                     <div className={'text-center'}>
                                         { this.state.setupCheck === true ? (

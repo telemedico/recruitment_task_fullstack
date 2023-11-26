@@ -3,6 +3,9 @@
 #  defaults: { _controller: 'AppBundle\Controller\DefaultController::indexAction' }
 #  methods:  GET
 #
+get_exchange_rates:
+    path: /api/exchange-rates
+    controller: App\Controller\ExchangeRatesController::getExchangeRates
 
 setupcheck:
     path: /api/setup-check
