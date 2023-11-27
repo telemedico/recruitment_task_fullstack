@@ -9,18 +9,12 @@ class SetupCheck extends Component {
         this.state = { setupCheck: {}, loading: true};
     }
 
-    getBaseUrl() {
-        return 'http://telemedi-zadanie.localhost';
-    }
-
     componentDidMount() {
         this.checkApiSetup();
     }
 
     checkApiSetup() {
-        //const baseUrl = this.getBaseUrl();
-        const baseUrl = 'http://telemedi-zadanie.localhost';
-        axios.get(baseUrl + `/api/setup-check?testParam=1`).then(response => {
+        axios.get(window.baseUrl + `/api/setup-check?testParam=1`).then(response => {
             let responseIsOK = response.data && response.data.testParam === 1
             this.setState({ setupCheck: responseIsOK, loading: false})
         }).catch(function (error) {

@@ -19,6 +19,8 @@
             <h1>Hey! This seems to work!</h1>
         {% endblock %}
 
+        {% block inline_js_up %}{% endblock %}
+
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
         {% endblock %}

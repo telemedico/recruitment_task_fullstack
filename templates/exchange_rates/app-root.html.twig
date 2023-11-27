@@ -10,3 +10,9 @@
      <div id="root"></div>
 
  {% endblock %}
+
+{% block inline_js_up %}
+    <script>
+        window.baseUrl = '{{ app.request.getScheme() ~ "://" ~ app.request.getHost() }}';
+    </script>
+{% endblock %}
