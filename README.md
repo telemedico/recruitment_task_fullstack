@@ -32,6 +32,7 @@ Jak zacząć pracę
 
 ### Setup środowiska za pomocą dockera
 
+  1. Dodaj `telemedi-zadanie.localhost   127.0.0.1` do pliku `/etc/hosts`
   1. Uruchom komendę:
   
         ```
