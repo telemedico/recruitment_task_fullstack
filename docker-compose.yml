@@ -4,7 +4,10 @@ services:
   webserver:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/web/Dockerfile
+    volumes:
+      - .:/var/www/html
+    command: ["bash", "/var/www/html/docker/web/init.sh"]
     container_name: recruitment-webserver
     restart: unless-stopped
     ports:
