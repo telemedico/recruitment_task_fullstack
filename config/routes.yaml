@@ -1,12 +1,8 @@
-#home:
-#  path: /
-#  defaults: { _controller: 'AppBundle\Controller\DefaultController::indexAction' }
-#  methods:  GET
-#
-
-setupcheck:
-    path: /api/setup-check
-    controller: App\Controller\DefaultController::setupCheck
+currenciesApi:
+    path: /api/currencies/{date}
+    controller: Currencies\Controller\ApiController::getAll
+    defaults: { date: "" }
+#    condition:  "context.getMethod() in ['GET'] and request.headers.get('Content-Type') matches '/json/i'"
 
 index:
     path: /{wildcard}
@@ -15,5 +11,4 @@ index:
     }
     requirements:
         wildcard: .*
-    # controller: App\Controller\DefaultController::index
 

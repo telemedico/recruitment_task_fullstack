@@ -1,0 +1,40 @@
+parameters:
+  currency.data_source_url: "http://api.nbp.pl/api/exchangerates/tables/A"
+  currency.rates:
+    eur:
+      buy: .05
+      sell: .07
+      digitsAfterDecimal: 2
+      icon: fa-eur
+    usd:
+      buy: .05
+      sell: .07
+      digitsAfterDecimal: 2
+      icon: fa-usd
+    czk:
+      sell: .15
+      digitsAfterDecimal: 2
+      icon: fa-kc
+    idr:
+      sell: .15
+      digitsAfterDecimal: 4
+      icon: fa-rupee
+    brl:
+      sell: .15
+      digitsAfterDecimal: 2
+      icon: fa-bs
+
+services:
+  _defaults:
+    autowire: true
+    bind:
+      $currencyDataSourceUrl: '%currency.data_source_url%'
+      $currencyRates: '%currency.rates%'
+
+  Currencies\:
+    resource: '../../src/Currencies'
+
+  Currencies\Controller\:
+    resource: '../../src/Currencies/Controller/'
+    autowire: true
+    tags: [ 'controller.service_arguments' ]
