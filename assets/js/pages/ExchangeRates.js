@@ -20,13 +20,19 @@ class ExchangeRates extends Component {
             return
         }
 
+        this.setState({ loading: true })
+
+        if (prevState.loading === this.state.loading && this.state.loading === true) {
+            return
+        }
+
         const todayDate = this.getDefaultDate()
         const date = this.getDate();
         const isToday = todayDate === date
 
-        this.setState({ isToday })
-
-        this.updateData()
+        this.getRatesFromApi(this.getDate()).then(response => {
+            this.setState({ ratesData: response.data, loading: false, isToday})
+        });
     }
 
     componentDidMount() {
@@ -46,12 +52,6 @@ class ExchangeRates extends Component {
         Promise.all(promises).then(([todayRates, rates]) => {
             this.setState({ ratesData: rates.data, todayRatesData: todayRates.data, loading: false, isToday })
         })
-    }
-
-    updateData() {
-        this.getRatesFromApi(this.getDate()).then(response => {
-            this.setState({ ratesData: response.data, loading: false})
-        });
     }
 
     getRatesFromApi(date) {
@@ -89,52 +89,58 @@ class ExchangeRates extends Component {
             <div>
                 <h2>Dane dla daty {date}</h2>
                 <DatePicker date={date}/>
-                <table className="table table-striped table-dark">
-                    <thead>
-                        <tr>
-                            <th scope="col">Nazwa waluty</th>
-                            <th scope="col">Kod waluty</th>
-                            <th scope="col">Średnia {this.state.isToday || " / Dzisiejsza"}</th>
-                            <th scope="col">Sprzedaż {this.state.isToday || " / Dzisiejsza"}</th>
-                            <th scope="col">Kupno {this.state.isToday || " / Dzisiejsza"}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {ratesData.map(({name, code, icon, rates}, key) => {
-                            if (this.state.isToday) {
+                {loading ? (
+                        <div className={'text-center'}>
+                            <span className="fa fa-spin fa-spinner fa-4x"></span>
+                        </div>
+                ) : (
+                    <table className="table table-striped table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nazwa waluty</th>
+                                <th scope="col">Kod waluty</th>
+                                <th scope="col">Średnia {this.state.isToday || " / Dzisiejsza"}</th>
+                                <th scope="col">Sprzedaż {this.state.isToday || " / Dzisiejsza"}</th>
+                                <th scope="col">Kupno {this.state.isToday || " / Dzisiejsza"}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {ratesData.map(({name, code, icon, rates}, key) => {
+                                if (this.state.isToday) {
+                                    return <tr key={key}>
+                                        <td scope="row">{name}</td>
+                                        <td scope="row">{code.toUpperCase()}</td>
+                                        <td><Money money={rates.origin} icon={icon}/></td>
+                                        <td><Money money={rates.sell} icon={icon}/></td>
+                                        <td><Money money={rates.buy} icon={icon}/></td>
+                                    </tr>
+                                }
+
+                                const todayRate = todayRates[code]
+
                                 return <tr key={key}>
                                     <td scope="row">{name}</td>
                                     <td scope="row">{code.toUpperCase()}</td>
-                                    <td><Money money={rates.origin} icon={icon}/></td>
-                                    <td><Money money={rates.sell} icon={icon}/></td>
-                                    <td><Money money={rates.buy} icon={icon}/></td>
+                                    <td>
+                                        <Money money={rates.origin} icon={icon}/>
+                                        &nbsp;/&nbsp;
+                                        <Money money={todayRate.rates.origin} icon={icon}/>
+                                    </td>
+                                    <td>
+                                        <Money money={rates.sell} icon={icon}/>
+                                        &nbsp;/&nbsp;
+                                        <Money money={todayRate.rates.origin} icon={icon}/>
+                                    </td>
+                                    <td>
+                                        <Money money={rates.buy} icon={icon}/>
+                                        &nbsp;/&nbsp;
+                                        <Money className="text-secondary" money={todayRate.rates.origin} icon={icon}/>
+                                    </td>
                                 </tr>
-                            }
-
-                            const todayRate = todayRates[code]
-
-                            return <tr key={key}>
-                                <td scope="row">{name}</td>
-                                <td scope="row">{code.toUpperCase()}</td>
-                                <td>
-                                    <Money money={rates.origin} icon={icon}/>
-                                    &nbsp;/&nbsp;
-                                    <Money money={todayRate.rates.origin} icon={icon}/>
-                                </td>
-                                <td>
-                                    <Money money={rates.sell} icon={icon}/>
-                                    &nbsp;/&nbsp;
-                                    <Money money={todayRate.rates.origin} icon={icon}/>
-                                </td>
-                                <td>
-                                    <Money money={rates.buy} icon={icon}/>
-                                    &nbsp;/&nbsp;
-                                    <Money className="text-secondary" money={todayRate.rates.origin} icon={icon}/>
-                                </td>
-                            </tr>
-                        })}
-                    </tbody>
-                </table>
+                            })}
+                        </tbody>
+                    </table>
+                )}
             </div>
         )
     }
