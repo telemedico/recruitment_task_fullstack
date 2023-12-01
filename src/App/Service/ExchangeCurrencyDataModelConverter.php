@@ -52,11 +52,10 @@ class ExchangeCurrencyDataModelConverter {
         return $result;
     }
 
-    private function calculateExchangeDataModelLatestOnly(array $response): Array {
-
+    protected function calculateExchangeDataModelLatestOnly(array $response): Array {
+        
         $toCalculateMain = $response[latest][rates];
         $result = [];
-
         foreach($toCalculateMain as $item) {
             $code = $item[code];
             if (in_array($code, $this->showCurrencies)) {
@@ -68,7 +67,7 @@ class ExchangeCurrencyDataModelConverter {
         return $result;
     }
 
-    private function calculateExchangeDataModelWithHistorical(array $response): Array {
+    protected function calculateExchangeDataModelWithHistorical(array $response): Array {
         $result = [];
         $arrLatest = $response[latest][rates];
         $arrHistorical = $response[historical][rates];
@@ -104,7 +103,7 @@ class ExchangeCurrencyDataModelConverter {
         return $result;
     }
 
-    private function calculateDates(Array $response): Array {
+    protected function calculateDates(Array $response): Array {
         $result = [
             effectiveDate => $response[onlyLatestData] 
                 ? $response[latest][effectiveDate] 
@@ -116,25 +115,25 @@ class ExchangeCurrencyDataModelConverter {
         return $result;
     }
 
-    private function getAmountMultiplied(string $currencyCode): int  {
+    protected function getAmountMultiplied(string $currencyCode): int  {
         return array_key_exists($currencyCode, $this->currencyExchangeParams) 
             ? $this->currencyExchangeParams[$currencyCode][multiplied]
             : $this->currencyExchangeParams[_default][multiplied];
     }
 
-    private function getSellCommision(string $currencyCode): Float|null  {
+    protected function getSellCommision(string $currencyCode): Float|null  {
         return array_key_exists($currencyCode, $this->currencyExchangeParams) 
             ? $this->currencyExchangeParams[$currencyCode][sellCommision]
             : $this->currencyExchangeParams[_default][sellCommision];
     }
 
-    private function getBuyCommision(string $currencyCode): Float|null  {
+    protected function getBuyCommision(string $currencyCode): Float|null  {
         return array_key_exists($currencyCode, $this->currencyExchangeParams) 
             ? $this->currencyExchangeParams[$currencyCode][buyCommision]
             : $this->currencyExchangeParams[_default][buyCommision];
     }
     
-    private function calculateCurrencyPrices(bool $onlyLatestData, Array $item, Float|null $currentMid): Array {
+    protected function calculateCurrencyPrices(bool $onlyLatestData, Array $item, Float|null $currentMid): Array {
         $amountMultiplied = $this->getAmountMultiplied($item[code]);
         $buyCommision =  $this->getBuyCommision($item[code]);
         $sellCommision = $this->getSellCommision($item[code]);

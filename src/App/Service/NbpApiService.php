@@ -7,13 +7,17 @@ use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Response;
 
 class NbpApiService {
+    
+    public static function createClient() {
+        return HttpClient::create();
+    }
 
     public function fetchNbpApi(string|null $date, bool $onlyLatestData) {
         $result = [
             'onlyLatestData' => $onlyLatestData
         ];
 
-        $httpClient = HttpClient::create();
+        $httpClient = static::createClient();
         $response = [];
         if (!$onlyLatestData) {
             $response[historical] = $httpClient->request('GET', $this->prepareNbpApiUrl($date), [
