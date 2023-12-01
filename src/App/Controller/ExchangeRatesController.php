@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\ExchangeCurrencyDataModelConverter;
+use App\Service\NbpApiException;
+use App\Service\NbpApiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -15,8 +17,10 @@ define('MIN_DATE', '2023-01-01');
 
 class ExchangeRatesController extends AbstractController
 {
-    
-    public function exchangeNbpTable(Request $request): Response
+    public function exchangeNbpTable(Request $request,
+        NbpApiService $nbpApiService, 
+        ExchangeCurrencyDataModelConverter $exchangeCurrencyDataModelConverter
+    ): Response
     {
 
         $date = $request->query->get('date');
@@ -29,36 +33,27 @@ class ExchangeRatesController extends AbstractController
             );
         }
 
-        $url = $this->prepareNbpApiUrl($date);
-        $response = HttpClient::create()->request('GET', $url, [
-            'headers' => [
-                'Accept' => 'application/json',
-            ],
-        ]);
+        $onlyLatestData = !is_string($date) || $date === date('Y-m-d');
 
-        if ($response->getStatusCode() !== Response::HTTP_OK) {
+        $responseData = null;
+
+        try {
+            $responseData = $nbpApiService->fetchNbpApi($date, $onlyLatestData);
+        } catch (NbpApiException $e) {
+            $nbpResponse = $e->getResponse();
             return new Response(
-                'Wrong response from NBP Api, URL: '.$url,
-                $response->getStatusCode(),
+                'Wrong NBP APi response',
+                $nbpResponse->getStatusCode(),
                 ['Content-type' => 'text/plain']
             );
         }
-
- 
         return new Response(
-            $response->getContent(),
+            json_encode($exchangeCurrencyDataModelConverter->calculateExchangeDataModel($responseData, $onlyLatestData)),
             Response::HTTP_OK,
             ['Content-type' => 'application/json']
         );
 
     }
-
-    private function prepareNbpApiUrl($date): String {
-        return is_string($date) 
-            ? NBP_API_BASE_URT.$date.'/?format=json'
-            : NBP_LATEST_API_URT;
-    }
-
 
     private function validDate($requestDate): bool {
         $pattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/";

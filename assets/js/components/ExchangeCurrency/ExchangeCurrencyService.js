@@ -19,39 +19,10 @@ export class ExchangeCurrencyService {
 
     async fetchExchangeCurrencyData(dateIso8601) {
 
-        const result = {
-            latest: null,
-            historical: null,
-        }
-
-        result.onlyLatestData = true;
-
-        if (this._checkToday(dateIso8601)) {
-            result.latest = await this._fetchExchangeCurrencyTableByDate();
-
-        } else if (this._validDate(dateIso8601)) {
-            const response = await Promise.all([
-                this._fetchExchangeCurrencyTableByDate(),
-                this._fetchExchangeCurrencyTableByDate(dateIso8601),
-            ])
-            result.onlyLatestData = false;
-            result.latest = response[0];
-            result.historical = response[1];
-
-        } else {
+        if (dateIso8601 && !this._validDate(dateIso8601)) {
             return Promise.reject({ type: ExchangeCurrencyService.ErrorCodes.INVALID_DATE });
-        }
+        } 
 
-        return result;
-    }
-
-
-    todayIso8601() {
-        return this._convertDateToIso8601(new Date());
-    }
-
-
-    async _fetchExchangeCurrencyTableByDate(dateIso8601 = null) {
         const response = await fetch(this._prepareUrl(dateIso8601), {
             method: 'GET',
             headers: {
@@ -66,11 +37,16 @@ export class ExchangeCurrencyService {
         }
 
         try {
-            const json = await response.json();
-            return json[0];
+            return await response.json();
         } catch (error) {
+            console.error(error);
             return Promise.reject({ type: ExchangeCurrencyService.ErrorCodes.INVALID_JSON });
         };
+    }
+
+
+    todayIso8601() {
+        return this._convertDateToIso8601(new Date());
     }
 
   

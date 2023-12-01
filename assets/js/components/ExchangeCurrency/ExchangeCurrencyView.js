@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { ExchangeCurrencyService }  from './ExchangeCurrencyService.js';
-import { ExchangeCurrencyDataModelConverter } from './ExchangeCurrencyDataModelConverter.js'
 import ExchangeCurrencyPanel from './ExchangeCurrencyPanel.js';
 
 class ExchangeCurrencyView extends Component {
@@ -8,7 +7,6 @@ class ExchangeCurrencyView extends Component {
     constructor() {
         super();
         this._exchangeService = new ExchangeCurrencyService();
-        this._exchangeDataModelConverter = new ExchangeCurrencyDataModelConverter();
         this.state = {
             effectiveDate: this._exchangeService.todayIso8601(),
             latestDate: null,
@@ -27,10 +25,9 @@ class ExchangeCurrencyView extends Component {
 
     _fetchCurrencyExchangeModel(date) {
         this._exchangeService.fetchExchangeCurrencyData(date).then(response => {
-            const dataModel = this._exchangeDataModelConverter.calculateExchangeDataModel(response);
             const newState = {
                 ...this.state,
-                ...dataModel,
+                ...response,
                 errorMessage: null,
                 infoMessage: null,
             }
