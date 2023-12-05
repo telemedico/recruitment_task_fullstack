@@ -9,7 +9,10 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
+    volumes:
+      - ./:/var/www/html
     environment:
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
+      - X_DEBUG_START_WITH_REQUEST=0

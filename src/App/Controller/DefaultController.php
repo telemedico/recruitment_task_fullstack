@@ -14,6 +14,7 @@ class DefaultController extends AbstractController
 
     public function index(): Response
     {
+//        return $this->json('index');
         return $this->render(
             'exchange_rates/app-root.html.twig'
         );
@@ -21,6 +22,7 @@ class DefaultController extends AbstractController
 
     public function setupCheck(Request $request): Response
     {
+//        return $this->json('setupCheck');
         $responseContent = json_encode([
             'testParam' => $request->get('testParam')
                 ? (int) $request->get('testParam')

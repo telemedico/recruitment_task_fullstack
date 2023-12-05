@@ -8,6 +8,18 @@ setupcheck:
     path: /api/setup-check
     controller: App\Controller\DefaultController::setupCheck
 
+list:
+    path: /exchange-rates/{date}
+    defaults: {
+        _controller: App\Controller\ExchangeRatesController::list
+    }
+
+currencyData:
+    path: /currencyData/{date}
+    defaults: {
+        _controller: App\Controller\ExchangeRatesController::getCurrencyData
+    }
+
 index:
     path: /{wildcard}
     defaults: {
@@ -16,4 +28,5 @@ index:
     requirements:
         wildcard: .*
     # controller: App\Controller\DefaultController::index
+
 
