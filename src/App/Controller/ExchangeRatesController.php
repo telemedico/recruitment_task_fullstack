@@ -50,22 +50,24 @@ class ExchangeRatesController extends AbstractController
 
         $rates = $this->apiService->connectToNBP($date);
 
-        foreach ($rates as $exchange) {
-            foreach ($exchange['rates'] as $rate) {
-                $currencyCode = (string)$rate['code'];
-                $currencyName = (string)$rate['currency'];
+        if ($rates) {
+            foreach ($rates as $exchange) {
+                foreach ($exchange['rates'] as $rate) {
+                    $currencyCode = (string)$rate['code'];
+                    $currencyName = (string)$rate['currency'];
 
-                if (in_array($currencyCode, $this->exchanges)) {
-                    $mid = (float)$rate['mid'];
-                    [$buyRate, $sellRate] = $this->calculateRates($currencyCode, $mid);
+                    if (in_array($currencyCode, $this->exchanges)) {
+                        $mid = (float)$rate['mid'];
+                        [$buyRate, $sellRate] = $this->calculateRates($currencyCode, $mid);
 
-                    $exchangeRates[$date][$currencyCode] = [
-                        'sellRate' => $sellRate,
-                        'buyRate' => $buyRate,
-                        'mid' => $mid,
-                        'currency' => $currencyName,
-                        'date' => $exchange['effectiveDate'],
-                    ];
+                        $exchangeRates[$date][$currencyCode] = [
+                            'sellRate' => $sellRate,
+                            'buyRate' => $buyRate,
+                            'mid' => $mid,
+                            'currency' => $currencyName,
+                            'date' => $exchange['effectiveDate'],
+                        ];
+                    }
                 }
             }
         }

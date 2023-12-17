@@ -21,11 +21,14 @@ class ApiService
      */
     public function connectToNBP(string $date)
     {
-//        $apiEndpoint = $this->nbp_api["exchange_rates_all"] . $date . '?format=json';
-        $apiEndpoint = $this->nbp_api["exchange_rates_all"] .'2023-10-16' . '?format=json';
-//        data w formacie RRRR-MM-DD
+        $apiEndpoint = $this->nbp_api["exchange_rates_all"] . $date . '?format=json';
 
-        $apiData = file_get_contents($apiEndpoint);
+        try {
+            $apiData = file_get_contents($apiEndpoint);
+        } catch (Exception $exception) {
+            return false;
+        }
+
 
         if ($apiData === false) {
             throw new Exception('Nie udało się pobrać danych z API.');
