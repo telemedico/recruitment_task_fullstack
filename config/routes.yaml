@@ -19,7 +19,7 @@ index:
 
 # config/routes.yaml
 get_exchange_rates:
-  path: /api/exchange-rates
+  path: /api/exchange-rates/{date}
   controller: App\Controller\ExchangeRatesController::getExchangeRates
 
 display_exchange_rates:

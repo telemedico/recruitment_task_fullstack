@@ -12,12 +12,12 @@ use Symfony\Component\HttpFoundation\Response;
 class DefaultController extends AbstractController
 {
 
-//    public function index(): Response
-//    {
-//        return $this->render(
-//            'exchange_rates/app-root.html.twig'
-//        );
-//    }
+    public function index(): Response
+    {
+        return $this->render(
+            'exchange_rates/app-root.html.twig'
+        );
+    }
 
     public function setupCheck(Request $request): Response
     {

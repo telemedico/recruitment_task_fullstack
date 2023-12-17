@@ -7,7 +7,7 @@ use Exception;
 
 class ApiService
 {
-    private array $nbp_api;
+    private $nbp_api;
 
     public function __construct(
         array $nbp_api
@@ -19,9 +19,11 @@ class ApiService
     /**
      * @throws Exception
      */
-    public function connectToNBP()
+    public function connectToNBP(string $date)
     {
-        $apiEndpoint = $this->nbp_api["exchange_rates_all"];
+//        $apiEndpoint = $this->nbp_api["exchange_rates_all"] . $date . '?format=json';
+        $apiEndpoint = $this->nbp_api["exchange_rates_all"] .'2023-10-16' . '?format=json';
+//        data w formacie RRRR-MM-DD
 
         $apiData = file_get_contents($apiEndpoint);
 
