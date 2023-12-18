@@ -1,4 +1,7 @@
 import React, {Component} from 'react';
+import axios from "axios";
+import CurrencyCard from "./CurrencyCard";
+import {getBaseUrl} from "../utils";
 
 class ExchangeRates extends Component {
     constructor() {
@@ -6,21 +9,34 @@ class ExchangeRates extends Component {
         this.state = {selectedDate: new Date().toISOString().slice(0, 10), data: [], loading: true};
     }
 
-    getBaseUrl() {
-        return 'http://telemedi-zadanie.localhost';
-    }
-
     componentDidMount() {
-        this.loadData();
+        if (this.props.match.params.date) {
+            this.setState({
+                selectedDate: this.props.match.params.date
+            }, () => {
+                this.loadData();
+            });
+        } else {
+            this.loadData();
+        }
     }
 
     loadData() {
-
+        let url = getBaseUrl() + `/api/exchange-rates/` + this.state.selectedDate;
+        axios.get(url).then(response => {
+            this.setState({loading: false, data: response.data})
+        }).catch((error) => {
+            this.setState({loading: false, data: null});
+        });
     }
 
     updateSelectedDate = (event) => {
         this.setState({
-            selectedDate: event.target.value
+            selectedDate: event.target.value,
+            loading: true
+        }, () => {
+            this.loadData();
+            this.props.history.push(`/exchange-rates/${event.target.value}`);
         });
     }
 
@@ -37,7 +53,7 @@ class ExchangeRates extends Component {
                             </div>
                         </div>
                         <div className="row mt-5">
-                            <div className="col">
+                            <div className="col-md-8 offset-md-2 mb-3">
                                 <input
                                     value={this.state.selectedDate}
                                     onChange={this.updateSelectedDate}
@@ -52,8 +68,18 @@ class ExchangeRates extends Component {
                                         <span className="fa fa-spin fa-spinner fa-4x"></span>
                                     </div>
                                 ) : (
-                                    <div className="row">
-                                        {this.state.data}
+                                    <div>
+                                        {this.state.data ? (
+                                            <div>
+                                                {this.state.data.map((item, index) => (
+                                                    <CurrencyCard key={index} currency={item}/>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <p>Brak danych.</p>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>

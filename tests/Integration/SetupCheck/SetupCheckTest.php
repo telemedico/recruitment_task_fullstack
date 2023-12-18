@@ -10,12 +10,11 @@ class SetupCheckTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $client->request('GET', '/api/currency-rates/2023-11-29');
+        $client->request('GET', '/api/setup-check');
         $this->assertResponseIsSuccessful();
         $response = $client->getResponse();
         $this->assertJson($response->getContent());
         $responseData = json_decode($response->getContent(), true);
-        print_r($responseData);
     }
 
 
