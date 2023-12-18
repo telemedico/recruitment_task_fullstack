@@ -12,7 +12,7 @@ currency-rates:
     path: /api/exchange-rates/{date}
     controller: App\Controller\ExchangeRatesController::exchangeRates
     requirements:
-      date: '\d{4}-\d{2}-\d{2}'  # Optional: Define a pattern for the date parameter
+      date: '\d{4}-\d{2}-\d{2}'
 
 index:
     path: /{wildcard}
