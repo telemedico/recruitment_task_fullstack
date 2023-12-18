@@ -8,7 +8,7 @@ setupcheck:
     path: /api/setup-check
     controller: App\Controller\DefaultController::setupCheck
 
-currency-rates:
+exchange-rates:
     path: /api/exchange-rates/{date}
     controller: App\Controller\ExchangeRatesController::exchangeRates
     requirements:
