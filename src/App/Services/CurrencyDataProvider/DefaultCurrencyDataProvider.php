@@ -48,8 +48,17 @@ class DefaultCurrencyDataProvider implements CurrencyDataProviderInterface
 
     private function checkDate($date): void
     {
+        $current_date = new DateTime();
+        $current_date->setTime(23, 59, 59);
+
         if ($date->format("Y") < 2023) {
             throw new CurrencyDataProviderException('Wybierz datę po 2023.');
+        }
+
+        if ($date > $current_date) {
+            throw new CurrencyDataProviderException(
+                "Nie możesz wybrać przyszłej daty."
+            );
         }
     }
 }
