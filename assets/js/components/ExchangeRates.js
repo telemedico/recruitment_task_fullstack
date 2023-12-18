@@ -6,7 +6,12 @@ import {getBaseUrl} from "../utils";
 class ExchangeRates extends Component {
     constructor() {
         super();
-        this.state = {selectedDate: new Date().toISOString().slice(0, 10), data: [], loading: true};
+        this.state = {
+            selectedDate: new Date().toISOString().slice(0, 10),
+            today: new Date().toISOString().slice(0, 10),
+            data: [],
+            loading: true
+        };
     }
 
     componentDidMount() {
@@ -27,10 +32,17 @@ class ExchangeRates extends Component {
             this.setState({loading: false, data: response.data})
         }).catch((error) => {
             this.setState({loading: false, data: null});
+
+            if (error.response.status !== 404) {
+                alert('Whoops! Wystąpił niespodziewany błąd: ' + error.response.data.error);
+            }
         });
     }
 
     updateSelectedDate = (event) => {
+        if (!event.target.value) {
+            event.target.value = this.state.today;
+        }
         this.setState({
             selectedDate: event.target.value,
             loading: true
@@ -58,6 +70,8 @@ class ExchangeRates extends Component {
                                     value={this.state.selectedDate}
                                     onChange={this.updateSelectedDate}
                                     type="date"
+                                    min={'2023-01-01'}
+                                    max={this.state.today}
                                 />
                             </div>
                         </div>
@@ -76,8 +90,13 @@ class ExchangeRates extends Component {
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div>
-                                                <p>Brak danych.</p>
+                                            <div className="row">
+                                                <div className="col card mb-3">
+                                                    <div className="card-body">
+                                                        <h5 className="card-title mt-2">Brak danych dla wybranej
+                                                            daty.</h5>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )}
                                     </div>

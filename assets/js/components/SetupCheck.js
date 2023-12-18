@@ -1,14 +1,11 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {getBaseUrl} from "../utils";
 
 class SetupCheck extends Component {
     constructor() {
         super();
-        this.state = { setupCheck: {}, loading: true};
-    }
-
-    getBaseUrl() {
-        return 'http://telemedi-zadanie.localhost';
+        this.state = {setupCheck: {}, loading: true};
     }
 
     componentDidMount() {
@@ -16,19 +13,18 @@ class SetupCheck extends Component {
     }
 
     checkApiSetup() {
-        const baseUrl = this.getBaseUrl();
-        axios.get(baseUrl + `/api/setup-check?testParam=1`).then(response => {
+        axios.get(getBaseUrl() + `/api/setup-check?testParam=1`).then(response => {
             let responseIsOK = response.data && response.data.testParam === 1
-            this.setState({ setupCheck: responseIsOK, loading: false})
+            this.setState({setupCheck: responseIsOK, loading: false})
         }).catch(function (error) {
             console.error(error);
-            this.setState({ setupCheck: false, loading: false});
+            this.setState({setupCheck: false, loading: false});
         });
     }
 
     render() {
         const loading = this.state.loading;
-        return(
+        return (
             <div>
                 <section className="row-section">
                     <div className="container">
@@ -42,10 +38,12 @@ class SetupCheck extends Component {
                                     </div>
                                 ) : (
                                     <div className={'text-center'}>
-                                        { this.state.setupCheck === true ? (
-                                            <h3 className={'text-success text-bold'}><strong>React app works!</strong></h3>
+                                        {this.state.setupCheck === true ? (
+                                            <h3 className={'text-success text-bold'}><strong>React app works!</strong>
+                                            </h3>
                                         ) : (
-                                            <h3 className={'text-error text-bold'}><strong>React app doesn't work :(</strong></h3>
+                                            <h3 className={'text-error text-bold'}><strong>React app doesn't work
+                                                :(</strong></h3>
                                         )}
                                     </div>
                                 )}
@@ -57,4 +55,5 @@ class SetupCheck extends Component {
         )
     }
 }
+
 export default SetupCheck;
