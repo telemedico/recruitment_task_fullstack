@@ -39,7 +39,7 @@ class ExchangeRatesController extends AbstractController
         try {
             $data = $this->currencyDataProvider->getData($date);
         } catch (NoDataException $e) {
-            return new JsonResponse(['error' => 'Brak danych dla wybranej daty.'], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['error' => 'Brak danych dla wybranej daty.'], Response::HTTP_NOT_FOUND);
         } catch (ExchangeRatesProviderException|CurrencyDataProviderException $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
