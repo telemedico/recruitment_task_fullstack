@@ -27,7 +27,7 @@ class NbpExchangeRatesProvider implements ExchangeRatesProviderInterface
 
         foreach ($data[0]['rates'] as $item) {
             $currency = (new Currency())
-                ->setName($item['currency'])
+                ->setName(ucwords($item['currency']))
                 ->setCode($item['code'])
                 ->setPrice($item['mid']);
 

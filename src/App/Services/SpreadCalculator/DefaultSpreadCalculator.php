@@ -8,6 +8,7 @@ use App\Dtos\Currency;
 use App\Services\SpreadCalculator\Currencies\CurrencySpreadCalculatorInterface;
 use App\Services\SpreadCalculator\Currencies\DefaultCurrencySpreadCalculator;
 use App\Services\SpreadCalculator\Currencies\EurSpreadCalculator;
+use App\Services\SpreadCalculator\Currencies\IdrSpreadCalculator;
 use App\Services\SpreadCalculator\Currencies\UsdSpreadCalculator;
 
 class DefaultSpreadCalculator implements SpreadCalculatorInterface
@@ -33,6 +34,8 @@ class DefaultSpreadCalculator implements SpreadCalculatorInterface
                 return new UsdSpreadCalculator();
             case 'EUR':
                 return new EurSpreadCalculator();
+            case 'IDR':
+                return new IdrSpreadCalculator();
             default:
                 return new DefaultCurrencySpreadCalculator();
         }
