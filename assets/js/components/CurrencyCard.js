@@ -22,7 +22,6 @@ class CurrencyCard extends Component {
                         </div>
                     </div>
                 </div>
-
             </div>
         )
     }
