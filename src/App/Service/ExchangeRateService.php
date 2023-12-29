@@ -30,8 +30,10 @@ class ExchangeRateService implements IExchangeRateService
             return null;
         }
 
+        $rates = $this->getFilteredRates($response->toArray());
+
         return json_encode(
-            $this->getFilteredRates($response->toArray())
+            $this->addBuyAndSellPrices($rates)
         );
     }
 
@@ -47,5 +49,16 @@ class ExchangeRateService implements IExchangeRateService
                 }
             )
         );
+    }
+
+    private function addBuyAndSellPrices(array $rates): array
+    {
+        return array_map(static function($rate) {
+            $rate['sell'] = round($rate['mid'] + Currencies::getSellPriceMargin($rate['code']), 2);
+            $rate['buy'] = Currencies::getBuyPriceMargin($rate['code']) !== 0.0
+                ? round($rate['mid'] + Currencies::getBuyPriceMargin($rate['code']), 2)
+                : 0;
+            return $rate;
+        }, $rates);
     }
 }

@@ -20,4 +20,24 @@ class Currencies
             self::BRL,
         ];
     }
+
+    public static function getBuyPriceMargin(string $code): float {
+        switch($code) {
+            case self::EUR:
+            case self::USD:
+                return 0.05;
+            default:
+                return 0.0;
+        }
+    }
+
+    public static function getSellPriceMargin(string $code): float {
+        switch($code) {
+            case self::EUR:
+            case self::USD:
+                return 0.07;
+            default:
+                return 0.15;
+        }
+    }
 }

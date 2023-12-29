@@ -77,7 +77,8 @@ class ExchangeRates extends Component {
                                             <tr>
                                                 <th scope={'col'}>Waluta</th>
                                                 <th scope={'col'}>Kod waluty</th>
-                                                <th scope={'col'}>Kurs średni</th>
+                                                <th scope={'col'}>Zakup</th>
+                                                <th scope={'col'}>Sprzedaż</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -85,7 +86,8 @@ class ExchangeRates extends Component {
                                                 <tr key={currency.code}>
                                                     <th scope={'row'}>{currency.currency}</th>
                                                     <td>{currency.code}</td>
-                                                    <td>{currency.mid}</td>
+                                                    <td>{currency.buy !== 0 ? currency.buy : '-'}</td>
+                                                    <td>{currency.sell !== 0 ? currency.sell : '-'}</td>
                                                 </tr>
                                             ))}
                                             </tbody>
