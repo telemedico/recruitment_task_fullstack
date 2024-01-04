@@ -110,13 +110,13 @@ class NbpApiClient
         // The date must be after cutoff.
         if ($dateObj < $this->earliestDateAvailable) {
             throw new InvalidDateException(
-                "Can't chose a date before {$this->earliestDateAvailable->format('Y-m-d')}.");
+                "Can't choose a date before {$this->earliestDateAvailable->format('Y-m-d')}.");
         }
 
         // The date must not be from the future.
         $today = new DateTime();
         if ($dateObj > $today) {
-            throw new InvalidDateException("Can't chose a date from the future.");
+            throw new InvalidDateException("Can't choose a date from the future.");
         }
     }
 

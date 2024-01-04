@@ -4,11 +4,21 @@ import {getCurrentDate} from "../../utils";
 import ExchangeRateRow from "./ExchangeRatesRow";
 
 export default function ExchangeRatesTable({date}) {
-    const {data, loading} = useBackendAPI(date);
+    const {data, loading, error} = useBackendAPI(date);
 
+    // Display spinner while the data is loading
     if (loading) {
         return <div className={'text-center'}>
             <span className="fa fa-spin fa-spinner fa-4x"></span>
+        </div>
+    }
+
+    // Display a message if no data is available.
+    if (!data[getCurrentDate()] || !data[date]) {
+        return <div className={'text-center'}>
+            <div className={"text-danger"}>No data available.</div>
+            {error &&
+                <span className={"font-weight-light"}>({error})</span>}
         </div>
     }
 
@@ -26,7 +36,7 @@ export default function ExchangeRatesTable({date}) {
 
             <tbody>
 
-            {data[getCurrentDate()] && data[date] && Object.keys(data[date])?.map((currencyCode) => {
+            {Object.keys(data[date])?.map((currencyCode) => {
                 const currentDate = getCurrentDate();
                 const currencyData = {
                     ...data[date][currencyCode],
@@ -45,6 +55,7 @@ export default function ExchangeRatesTable({date}) {
                 return <ExchangeRateRow data={currencyData} key={currencyCode}/>
             })}
             </tbody>
-        </table>);
+        </table>
+    );
 }
 

@@ -10,6 +10,10 @@ export default function ExchangeRatesPage() {
 
     let handleDateChange = (e) => {
         let selected = e.target.value;
+        // Handle user clicking the "clear" button in datepicker UI
+        if(!selected){
+            selected = getCurrentDate();
+        }
         setSelectedDate(selected);
         history.push(`/exchange-rates/${selected}`) //add to url
     }
