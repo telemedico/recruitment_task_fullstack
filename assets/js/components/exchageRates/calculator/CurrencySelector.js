@@ -18,7 +18,7 @@ export default function CurrencySelector({availableCurrencies, setSelected, sele
         <select
             value={selected}
             onChange={handleChange}
-            className="form-select form-select-sm"
+            className="form-select form-select-sm bg-dark text-white"
             aria-label=".form-select-sm example"
         >
             {availableCurrencies.map((currency) => {
