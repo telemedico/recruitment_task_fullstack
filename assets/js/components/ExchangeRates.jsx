@@ -41,7 +41,7 @@ const ExchangeRates = () => {
             const errorMessage = error?.response?.data?.message;
             const errorCode = error?.response?.data?.code;
             // 2.
-            console.error(errorMessage)
+            console.log(errorMessage)
             setError(errorMessages[errorCode]);
             setRates(undefined);
         } finally {
