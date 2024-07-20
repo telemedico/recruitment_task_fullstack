@@ -36,6 +36,7 @@ class ExchangeRatesController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        // 5.
         try {
             $data = $this->exchangeRatesService->getExchangeRates($date, $currencies);
             return new JsonResponse($data, Response::HTTP_OK);

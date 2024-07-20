@@ -16,6 +16,7 @@ const ExchangeRates = () => {
     const minDate = new Date('2023-01-01');
     const maxDate = new Date();
 
+    // 1.
     const displayedCurrencies = [
         exchangeRates.USD.code,
         exchangeRates.EUR.code,
@@ -39,13 +40,16 @@ const ExchangeRates = () => {
         } catch (error) {
             const errorMessage = error?.response?.data?.message;
             const errorCode = error?.response?.data?.code;
-            setError(errorMessages[errorCode] || errorMessage);
+            // 2.
+            console.error(errorMessage)
+            setError(errorMessages[errorCode]);
             setRates(undefined);
         } finally {
             setLoading(false);
         }
     };
 
+    // 3.
     const handleDateBlur = () => {
         let selectedDate = new Date(date);
         if (selectedDate < minDate) selectedDate = minDate;
@@ -65,6 +69,7 @@ const ExchangeRates = () => {
 
         const { sell: sellMargin, buy: buyMargin } = exchangeParameters;
 
+        // 4.
         const getBuyString = (mid) =>
             buyMargin ? `kurs kupna: ${(mid - buyMargin).toFixed(4)} PLN` : '---';
         const getSellString = (mid) => `kurs sprzedaży: ${(mid + sellMargin).toFixed(4)} PLN`;

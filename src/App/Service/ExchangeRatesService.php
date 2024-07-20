@@ -34,6 +34,7 @@ class ExchangeRatesService
             throw new HttpException(Response::HTTP_BAD_REQUEST, 'Invalid date format or date is older than 2023.');
         }
 
+        // 6.
         $todayRates = $this->fetchRates("{$this->nbpApiUrl}?format=json");
         $specifiedDateRates = $this->fetchRates("{$this->nbpApiUrl}/$date?format=json");
 
