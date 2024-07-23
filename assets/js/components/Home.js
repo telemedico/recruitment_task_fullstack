@@ -3,6 +3,7 @@
 import React, {Component} from 'react';
 import {Route, Redirect, Switch, Link} from 'react-router-dom';
 import SetupCheck from "./SetupCheck";
+import ExchangeRates from "./ExchangeRates";
 
 class Home extends Component {
 
@@ -18,11 +19,18 @@ class Home extends Component {
                             </li>
 
                         </ul>
+                        <ul className="navbar-nav mr-auto">
+                            <li className="nav-item">
+                                <Link className={"nav-link"} to={"/exchange-rates"}> Test </Link>
+                            </li>
+
+                        </ul>
                     </div>
                 </nav>
                 <Switch>
-                    <Redirect exact from="/" to="/setup-check" />
-                    <Route path="/setup-check" component={SetupCheck} />
+                    <Redirect exact from="/" to="/setup-check"/>
+                    <Route path="/setup-check" component={SetupCheck}/>
+                    <Route path="/exchange-rates" component={ExchangeRates}/>
                 </Switch>
             </div>
         )
