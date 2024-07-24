@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+
+  webserver:
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    container_name: recruitment-webserver
+    restart: unless-stopped
+    volumes:
+     - ./:/var/www/html
+    networks:
+      telemedi_network:
+        ipv4_address: 172.45.49.10
+    environment:
+      - APACHE_RUN_USER=www-data
+      - APACHE_RUN_GROUP=www-data
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+networks:
+  telemedi_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.45.49.0/24"
