@@ -1,0 +1,38 @@
+services:
+  nginx:
+    build: docker/nginx
+    container_name: ${PROJECT_NAME}-nginx
+    working_dir: /var/www/application
+    volumes:
+      - .:/var/www/application
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - php-fpm
+
+  php-fpm:
+    build:
+      context: ./
+      dockerfile: docker/php-fpm/Dockerfile
+    container_name: ${PROJECT_NAME}-php
+    working_dir: /var/www/application
+    environment:
+      PS1: "php@telemedi:$$PWD\\$ "
+    user: "${UID}:${GID}"
+    volumes:
+      - .:/var/www/application
+      - ./docker/php-fpm-fpm/php-fpm-ini-overrides.ini:/etc/php-fpm/7.4/fpm/conf.d/99-overrides.ini
+
+  node:
+    build:
+      context: ./
+      dockerfile: docker/node/Dockerfile
+    container_name: ${PROJECT_NAME}-node
+    working_dir: /var/www/application
+    volumes:
+      - .:/var/www/application
+    user: "${UID}:${GID}"
+    tty: true
+    extra_hosts:
+      - "${DOMAIN}:host-gateway"

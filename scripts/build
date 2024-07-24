@@ -1,0 +1,39 @@
+#!/bin/bash
+
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+YELLOW='\e[0;33m'
+ENDCOLOR='\e[0m'
+
+clear
+
+echo -e "\n${GREEN}Stopping containers${ENDCOLOR}\n"
+docker compose down
+
+
+if [ -f .env ]; then
+  sed -i "s/UID=1000/UID=$(id -u)/g" .env
+  sed -i "s/GID=1000/GID=$(id -g)/g" .env
+  export $(grep -v '^#' .env | xargs)
+  echo -e "\n${GREEN}Loaded .env${ENDCOLOR}\n"
+else
+  echo -e "\n${RED}.env does not exist${ENDCOLOR}\n"
+  exit 1
+fi
+
+echo -e "\n${GREEN}Building containers${ENDCOLOR}\n"
+docker compose down
+
+echo -e "\n${GREEN}Starting containers${ENDCOLOR}\n"
+docker compose up -d
+
+if docker ps -q -f name="${PROJECT_NAME}-node" > /dev/null; then
+  echo -e "\n${GREEN}Building front-end${ENDCOLOR}\n"
+  docker exec -i "${PROJECT_NAME}-node" npm install
+  docker exec -i "${PROJECT_NAME}-node" npm run build
+fi
+
+if docker ps -q -f name="${PROJECT_NAME}-php" > /dev/null; then
+  echo -e "\n${GREEN}Composer initialization${ENDCOLOR}\n"
+  docker exec -i "${PROJECT_NAME}-php" composer install --optimize-autoloader
+fi
