@@ -67,3 +67,12 @@ Zakończenie pracy i wysłanie wyniku
      1. Twoich komentarzy dot. podejścia do zadania itd 
         1. np. _“Robiąc X miałem na względzie Y, zastosowałem podejście Z”_ 
   1. **Prosimy, potwierdź nam mailowo wykonanie zadania, wysyłając link do Pull Requesta w swoim forku.**
+
+**Docker Dev**
+docker compose -f docker-compose.dev.yml build
+docker compose -f docker-compose.dev.yml up -d
+docker exec -it recruitment-webserver bash -c "composer install && npm install && chown -R www-data:www-data /var/www/html && npm run watch"
+url http://172.45.49.10/
+
+**Run tests**
+docker exec -it recruitment-webserver ./vendor/bin/phpunit
