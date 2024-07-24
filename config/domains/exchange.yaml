@@ -1,0 +1,27 @@
+parameters:
+  exchange.currencies:
+    - code: EUR
+    - code: USD
+    - code: CZK
+    - code: IDR
+    - code: BRL
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\Exchange\:
+    resource: '../../src/Exchange/*'
+    exclude: '../../src/Exchange/Infrastructure/{Persistence,ApiPlatform,DependencyInjection}/*'
+
+  App\Exchange\Domain\Service\CurrencyRateApiClientInterface:
+    alias: App\Exchange\Infrastructure\Http\NBPCurrencyRateApiClient
+
+  App\Exchange\Domain\Service\ExchangeRateCalculator: ~
+  App\Exchange\Domain\Service\CurrencyServiceInterface:
+    alias: App\Exchange\Application\Service\CurrencyService
+
+  App\Exchange\Application\Service\CurrencyService:
+    arguments:
+      $currencies: '%exchange.currencies%'

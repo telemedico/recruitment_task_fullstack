@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Shared\Presentation\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 
 class DefaultController extends AbstractController
 {

@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\Shared\:
+    resource: '../../src/Shared/*'
+    exclude:
+      - '../../src/Shared/Infrastructure/{Persistence,ApiPlatform,DependencyInjection}/*'
+      - '../../src/Shared/Infrastructure/Symfony/Kernel.php'
+
+  App\Shared\Modules\RestClient\RestClient:
+    arguments:
+      $client: '@http_client'
+      $serializer: '@serializer'

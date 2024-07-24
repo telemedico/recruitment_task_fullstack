@@ -1,0 +1,7 @@
+controllersExchange:
+  resource: ../../src/Exchange/Presentation/Controller
+  type: annotation
+
+kernel:
+  resource: ../../src/Shared/Infrastructure/Kernel.php
+  type: annotation

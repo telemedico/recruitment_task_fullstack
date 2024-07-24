@@ -6,12 +6,12 @@
 
 setupcheck:
     path: /api/setup-check
-    controller: App\Controller\DefaultController::setupCheck
+    controller: App\Shared\Presentation\Controller\DefaultController::setupCheck
 
 index:
     path: /{wildcard}
     defaults: {
-        _controller: App\Controller\DefaultController::index
+        _controller: App\Shared\Presentation\Controller\DefaultController::index
     }
     requirements:
         wildcard: .*
