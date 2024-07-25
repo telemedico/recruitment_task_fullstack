@@ -12,19 +12,8 @@ use App\Shared\Modules\RestClient\Exceptions\RestClientResponseException;
 
 class CurrencyService implements CurrencyServiceInterface
 {
-    /**
-     * @var CurrencyRateApiClientInterface
-     */
     private $currencyRateApiClient;
-
-    /**
-     * @var CurrencyRateFactory
-     */
     private $currencyRateFactory;
-
-    /**
-     * @var array
-     */
     private $currencies;
 
     public function __construct(
@@ -48,8 +37,15 @@ class CurrencyService implements CurrencyServiceInterface
         foreach ($this->currencies as $currencyConfig) {
             $currencyCode = $currencyConfig['code'];
             try {
-                $apiRate = $this->currencyRateApiClient->getExchangeRate($currencyCode, $date);
-                $exchangeRates[] = $this->currencyRateFactory->create($apiRate);
+                $apiRateToday = $this->currencyRateApiClient->getExchangeRate($currencyCode, $date);
+                $apiRateYesterday = $this->currencyRateApiClient->getExchangeRate($currencyCode, $date->modify('-1 day'));
+
+                $difference = $apiRateToday->getRates()[0]->getMid() - $apiRateYesterday->getRates()[0]->getMid();
+
+                $exchangeRate = $this->currencyRateFactory->create($apiRateToday);
+                $exchangeRate->setTrend($difference);
+
+                $exchangeRates[] = $exchangeRate;
             } catch (RestClientResponseException $e) {
                 if (404 == $e->getCode()) {
                     throw new NoExchangeRatesFoundException('No exchange rates found for the given date.');

@@ -1,0 +1,23 @@
+.exchange-rates-page {
+    display: flex;
+}
+
+.table-section {
+    width: 60%;
+    padding: 20px;
+}
+
+.calculator-section {
+    width: 40%;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.input-group-prepend .input-group-text {
+    display: flex;
+    align-items: center;
+}

@@ -1,0 +1,31 @@
+.currency-calculator {
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.currency-calculator .card-title {
+    text-align: center;
+}
+
+.input-group .flag {
+    width: 20px;
+    height: 15px;
+    margin-right: 5px;
+}
+
+.input-group-prepend .input-group-text {
+    display: flex;
+    align-items: center;
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.form-select {
+    margin-bottom: 15px;
+}

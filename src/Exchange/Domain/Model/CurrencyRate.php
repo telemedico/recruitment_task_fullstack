@@ -7,6 +7,7 @@ namespace App\Exchange\Domain\Model;
 use App\Exchange\Domain\ValueObject\CurrencyCode;
 use App\Exchange\Domain\ValueObject\CurrencyName;
 use App\Exchange\Domain\ValueObject\ExchangeRate;
+use App\Exchange\Domain\ValueObject\ExchangeTrend;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
@@ -41,6 +42,12 @@ final class CurrencyRate
      * @var ExchangeRate
      */
     private $sellRate;
+
+    /**
+     * @Groups("write")
+     * @var ExchangeTrend
+     */
+    private $trend;
 
     public function __construct(
         CurrencyCode $code,
@@ -134,5 +141,19 @@ final class CurrencyRate
     public function getFlatSellRate(): float
     {
         return $this->sellRate->getValue();
+    }
+
+    /**
+     * @Groups("read")
+     * @SerializedName("trend")
+     */
+    public function getTrend(): float
+    {
+        return $this->trend->getValue();
+    }
+    public function setTrend(float $difference): self
+    {
+        $this->trend = new ExchangeTrend($difference);
+        return $this;
     }
 }
