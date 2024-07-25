@@ -1,14 +1,24 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Shared\Modules\RestClient;
 
+use App\Shared\Modules\RestClient\Exceptions\RestClientResponseException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
-use App\Shared\Modules\RestClient\Exceptions\RestClientResponseException;
 
 class RestClientResponse
 {
-    private ResponseInterface $response;
-    private SerializerInterface $serializer;
+    /**
+     * @var ResponseInterface
+     */
+    private $response;
+
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
 
     public function __construct(ResponseInterface $response, SerializerInterface $serializer)
     {
@@ -21,7 +31,7 @@ class RestClientResponse
     {
         $statusCode = $this->response->getStatusCode();
         if ($statusCode >= 400) {
-            throw new RestClientResponseException("HTTP request failed with status code {$statusCode}", $statusCode);
+            throw new RestClientResponseException('HTTP request failed with status code '.$statusCode, $statusCode);
         }
     }
 
@@ -37,6 +47,6 @@ class RestClientResponse
 
     public function toEntities(string $className): array
     {
-        return $this->serializer->deserialize($this->response->getContent(), $className . '[]', 'json');
+        return $this->serializer->deserialize($this->response->getContent(), $className.'[]', 'json');
     }
 }

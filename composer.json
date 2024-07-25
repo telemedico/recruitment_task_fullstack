@@ -16,21 +16,29 @@
   },
   "require": {
     "doctrine/annotations": "^1.14",
+    "phpdocumentor/reflection-docblock": "^5.3",
+    "phpstan/phpdoc-parser": "^1.29",
     "symfony/cache": "^4.4",
     "symfony/dotenv": "^4.4",
     "symfony/flex": "^1.21",
     "symfony/http-client": "^4.4",
     "symfony/http-foundation": "^4.4",
     "symfony/http-kernel": "^4.4",
+    "symfony/property-access": "^5.4",
+    "symfony/property-info": "^5.4",
+    "symfony/serializer": "^5.4",
     "symfony/twig-bundle": "^4.4.30",
     "symfony/webpack-encore-bundle": "^1.17",
-    "symfony/yaml": "^4.4"
+    "symfony/yaml": "^4.4",
+    "webmozart/assert": "^1.11"
   },
   "conflict": {
     "symfony/symfony": "*"
   },
   "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.4",
     "phpunit/phpunit": "^8.5",
+    "rector/rector": "^1.2",
     "symfony/browser-kit": "^5.4",
     "symfony/css-selector": "^5.4",
     "symfony/maker-bundle": "^1.39",
@@ -40,6 +48,9 @@
     "auto-scripts": {
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
-    }
+    },
+    "php-cs-fixer": "vendor/bin/php-cs-fixer",
+    "rector": "vendor/bin/rector",
+    "phpunit": "vendor/bin/phpunit"
   }
 }

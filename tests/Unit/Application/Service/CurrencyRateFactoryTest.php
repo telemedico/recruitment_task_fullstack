@@ -1,12 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Unit\Application\Service;
 
 use App\Exchange\Application\Service\CurrencyRateFactory;
 use App\Exchange\Domain\Model\CurrencyRate;
+use App\Exchange\Domain\Service\ExchangeRateCalculator;
 use App\Exchange\Domain\ValueObject\CurrencyCode;
 use App\Exchange\Domain\ValueObject\CurrencyName;
 use App\Exchange\Domain\ValueObject\ExchangeRate;
-use App\Exchange\Domain\Service\ExchangeRateCalculator;
 use App\Exchange\Infrastructure\Http\ApiCurrencyRate;
 use App\Exchange\Infrastructure\Http\ApiCurrencyRateRate;
 use PHPUnit\Framework\TestCase;

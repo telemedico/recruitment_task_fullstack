@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Exchange\Application\Service;
 
 use App\Exchange\Application\Exception\NoExchangeRatesFoundException;
@@ -9,9 +12,20 @@ use App\Shared\Modules\RestClient\Exceptions\RestClientResponseException;
 
 class CurrencyService implements CurrencyServiceInterface
 {
-    private CurrencyRateApiClientInterface $currencyRateApiClient;
-    private CurrencyRateFactory $currencyRateFactory;
-    private array $currencies;
+    /**
+     * @var CurrencyRateApiClientInterface
+     */
+    private $currencyRateApiClient;
+
+    /**
+     * @var CurrencyRateFactory
+     */
+    private $currencyRateFactory;
+
+    /**
+     * @var array
+     */
+    private $currencies;
 
     public function __construct(
         CurrencyRateApiClientInterface $currencyRateApiClient,
@@ -24,7 +38,6 @@ class CurrencyService implements CurrencyServiceInterface
     }
 
     /**
-     * @param \DateTimeImmutable $date
      * @return CurrencyRate[]
      * @throws NoExchangeRatesFoundException
      */
@@ -36,13 +49,13 @@ class CurrencyService implements CurrencyServiceInterface
             $currencyCode = $currencyConfig['code'];
             try {
                 $apiRate = $this->currencyRateApiClient->getExchangeRate($currencyCode, $date);
-                $exchangeRates[] = $this->currencyRateFactory->create($apiRate, $currencyCode);
+                $exchangeRates[] = $this->currencyRateFactory->create($apiRate);
             } catch (RestClientResponseException $e) {
-                if ($e->getCode() == 404) {
+                if (404 == $e->getCode()) {
                     throw new NoExchangeRatesFoundException('No exchange rates found for the given date.');
-                } else {
-                    throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
                 }
+
+                throw new \RuntimeException($e->getMessage(), $e->getCode(), $e);
             }
         }
 

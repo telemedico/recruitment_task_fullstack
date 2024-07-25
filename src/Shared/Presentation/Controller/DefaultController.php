@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends AbstractController
 {
-
     public function index(): Response
     {
         return $this->render(
@@ -23,14 +22,13 @@ class DefaultController extends AbstractController
         $responseContent = json_encode([
             'testParam' => $request->get('testParam')
                 ? (int) $request->get('testParam')
-                : null
+                : null,
         ]);
+
         return new Response(
             $responseContent,
             Response::HTTP_OK,
             ['Content-type' => 'application/json']
         );
     }
-
-
 }

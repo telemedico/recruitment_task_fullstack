@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Exchange\Domain\ValueObject;
 
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -10,8 +13,9 @@ final class CurrencyCode
     /**
      * @Groups("write")
      * @SerializedName("code")
+     * @var string
      */
-    private string $value;
+    private $value;
 
     public function __construct(string $value)
     {

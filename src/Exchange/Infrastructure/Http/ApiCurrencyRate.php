@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Exchange\Infrastructure\Http;
 
 use Symfony\Component\Serializer\Annotation\SerializedName;
@@ -7,23 +10,23 @@ class ApiCurrencyRate
 {
     /**
      * @SerializedName("currency")
+     * @var string
      */
-    private string $currency;
+    private $currency;
 
     /**
      * @SerializedName("code")
+     * @var string
      */
-    private string $code;
+    private $code;
 
     /**
      * @SerializedName("rates")
      * @var ApiCurrencyRateRate[]
      */
-    private array $rates;
+    private $rates;
 
     /**
-     * @param string $currency
-     * @param string $code
      * @param ApiCurrencyRateRate[] $rates
      */
     public function __construct(string $currency, string $code, array $rates)

@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Unit\Domain\ValueObject;
 
 use App\Exchange\Domain\ValueObject\CurrencyName;

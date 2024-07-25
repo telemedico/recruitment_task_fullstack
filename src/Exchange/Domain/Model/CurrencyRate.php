@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exchange\Domain\Model;
 
 use App\Exchange\Domain\ValueObject\CurrencyCode;
@@ -12,37 +14,41 @@ final class CurrencyRate
 {
     /**
      * @Groups("write")
+     * @var CurrencyCode
      */
-    private CurrencyCode $code;
+    private $code;
 
     /**
      * @Groups("write")
+     * @var CurrencyName
      */
-    private CurrencyName $name;
+    private $name;
 
     /**
      * @Groups("write")
+     * @var ExchangeRate
      */
-    private ExchangeRate $nbpRate;
+    private $nbpRate;
 
     /**
      * @Groups("write")
+     * @var ExchangeRate|null
      */
-    private ?ExchangeRate $buyRate;
+    private $buyRate;
 
     /**
      * @Groups("write")
+     * @var ExchangeRate
      */
-    private ExchangeRate $sellRate;
+    private $sellRate;
 
     public function __construct(
-        CurrencyCode  $code,
-        CurrencyName  $name,
-        ExchangeRate  $nbpRate,
+        CurrencyCode $code,
+        CurrencyName $name,
+        ExchangeRate $nbpRate,
         ?ExchangeRate $buyRate,
-        ExchangeRate  $sellRate
-    )
-    {
+        ExchangeRate $sellRate
+    ) {
         $this->code = $code;
         $this->name = $name;
         $this->nbpRate = $nbpRate;
@@ -88,10 +94,10 @@ final class CurrencyRate
     /**
      * @Groups("read")
      * @SerializedName("code")
-    */
+     */
     public function getFlatCode(): string
     {
-        return (string)$this->code;
+        return (string) $this->code;
     }
 
     /**
@@ -100,7 +106,7 @@ final class CurrencyRate
      */
     public function getFlatName(): string
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     /**

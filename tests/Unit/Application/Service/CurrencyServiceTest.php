@@ -1,24 +1,27 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Unit\Application\Service;
 
-use App\Exchange\Application\Service\CurrencyService;
-use App\Exchange\Application\Service\CurrencyRateFactory;
 use App\Exchange\Application\Exception\NoExchangeRatesFoundException;
-use App\Exchange\Domain\Service\CurrencyRateApiClientInterface;
+use App\Exchange\Application\Service\CurrencyRateFactory;
+use App\Exchange\Application\Service\CurrencyService;
 use App\Exchange\Domain\Model\CurrencyRate;
+use App\Exchange\Domain\Service\CurrencyRateApiClientInterface;
 use App\Exchange\Domain\ValueObject\CurrencyCode;
 use App\Exchange\Domain\ValueObject\CurrencyName;
 use App\Exchange\Domain\ValueObject\ExchangeRate;
+use App\Exchange\Infrastructure\Http\ApiCurrencyRate;
 use App\Shared\Modules\RestClient\Exceptions\RestClientResponseException;
 use PHPUnit\Framework\TestCase;
-use App\Exchange\Infrastructure\Http\ApiCurrencyRate;
 
 class CurrencyServiceTest extends TestCase
 {
     public function testGetExchangeRates(): void
     {
         $apiCurrencyRate = new ApiCurrencyRate('USD', 'Dollar', [
-            ['mid' => 4.0]
+            ['mid' => 4.0],
         ]);
 
         $currencyRateApiClientMock = $this->createMock(CurrencyRateApiClientInterface::class);

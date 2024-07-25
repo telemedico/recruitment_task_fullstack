@@ -1,8 +1,9 @@
 <?php
+
 namespace Integration\RestClient;
 
-use App\Shared\Modules\RestClient\RestClient;
 use App\Shared\Modules\RestClient\Exceptions\RestClientRequestException;
+use App\Shared\Modules\RestClient\RestClient;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -10,8 +11,9 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class RestClientTest extends KernelTestCase
 {
-    private RestClient $restClient;
-    private HttpClientInterface $httpClientMock;
+    private $restClient;
+
+    private $httpClientMock;
 
     protected function setUp(): void
     {

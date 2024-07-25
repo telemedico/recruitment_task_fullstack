@@ -1,9 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Exchange\Domain\Service;
 
 class ExchangeRateCalculator
 {
-    private array $rateAdjustments;
+    /**
+     * @var array
+     */
+    private $rateAdjustments;
 
     public function __construct(array $rateAdjustments)
     {
@@ -15,6 +21,7 @@ class ExchangeRateCalculator
         if (isset($this->rateAdjustments[$currency]['buy'])) {
             return $nbpRate + $this->rateAdjustments[$currency]['buy'];
         }
+
         return null;
     }
 
@@ -23,6 +30,7 @@ class ExchangeRateCalculator
         if (isset($this->rateAdjustments[$currency]['sell'])) {
             return $nbpRate + $this->rateAdjustments[$currency]['sell'];
         }
+
         return $nbpRate + $this->rateAdjustments['default']['sell'];
     }
 }

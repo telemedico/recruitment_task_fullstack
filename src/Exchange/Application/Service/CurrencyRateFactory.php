@@ -1,16 +1,22 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Exchange\Application\Service;
 
 use App\Exchange\Domain\Model\CurrencyRate;
+use App\Exchange\Domain\Service\ExchangeRateCalculator;
 use App\Exchange\Domain\ValueObject\CurrencyCode;
 use App\Exchange\Domain\ValueObject\CurrencyName;
 use App\Exchange\Domain\ValueObject\ExchangeRate;
-use App\Exchange\Domain\Service\ExchangeRateCalculator;
 use App\Exchange\Infrastructure\Http\ApiCurrencyRate;
 
 class CurrencyRateFactory
 {
-    private ExchangeRateCalculator $exchangeRateCalculator;
+    /**
+     * @var ExchangeRateCalculator
+     */
+    private $exchangeRateCalculator;
 
     public function __construct(ExchangeRateCalculator $exchangeRateCalculator)
     {
