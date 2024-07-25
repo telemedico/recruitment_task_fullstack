@@ -3,7 +3,9 @@ namespace App\Shared\RestClient;
 
 namespace App\Shared\Modules\RestClient;
 
+use App\Shared\Modules\RestClient\Exceptions\RestClientResponseException;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class RestClientResponse
@@ -47,11 +49,14 @@ class RestClientResponse
         }
     }
 
+    /**
+     * @throws TransportExceptionInterface
+     */
     private function checkStatusCode(): void
     {
         $statusCode = $this->response->getStatusCode();
         if ($statusCode >= 400) {
-            throw new \RuntimeException("HTTP request failed with status code {$statusCode}");
+            throw new RestClientResponseException("HTTP request failed with status code {$statusCode}");
         }
     }
 }

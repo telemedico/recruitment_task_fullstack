@@ -1,36 +1,47 @@
 <?php
+
 namespace App\Exchange\Domain\Model;
 
+use App\Exchange\Domain\ValueObject\CurrencyCode;
+use App\Exchange\Domain\ValueObject\CurrencyName;
+use App\Exchange\Domain\ValueObject\ExchangeRate;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
-class CurrencyRate
+final class CurrencyRate
 {
     /**
-     * @Groups("read")
+     * @Groups("write")
      */
-    private string $code;
+    private CurrencyCode $code;
 
     /**
-     * @Groups("read")
+     * @Groups("write")
      */
-    private string $name;
+    private CurrencyName $name;
 
     /**
-     * @Groups("read")
+     * @Groups("write")
      */
-    private float $nbpRate;
+    private ExchangeRate $nbpRate;
 
     /**
-     * @Groups("read")
+     * @Groups("write")
      */
-    private ?float $buyRate;
+    private ?ExchangeRate $buyRate;
 
     /**
-     * @Groups("read")
+     * @Groups("write")
      */
-    private float $sellRate;
+    private ExchangeRate $sellRate;
 
-    public function __construct(string $code, string $name, float $nbpRate, ?float $buyRate, float $sellRate)
+    public function __construct(
+        CurrencyCode  $code,
+        CurrencyName  $name,
+        ExchangeRate  $nbpRate,
+        ?ExchangeRate $buyRate,
+        ExchangeRate  $sellRate
+    )
     {
         $this->code = $code;
         $this->name = $name;
@@ -39,28 +50,83 @@ class CurrencyRate
         $this->sellRate = $sellRate;
     }
 
-    public function getCode(): string
+    public function getCode(): CurrencyCode
     {
         return $this->code;
     }
 
-    public function getName(): string
+    public function getName(): CurrencyName
     {
         return $this->name;
     }
 
-    public function getNbpRate(): float
+    public function getNbpRate(): ExchangeRate
     {
         return $this->nbpRate;
     }
 
-    public function getBuyRate(): ?float
+    public function getBuyRate(): ?ExchangeRate
     {
         return $this->buyRate;
     }
 
-    public function getSellRate(): float
+    public function getSellRate(): ExchangeRate
     {
         return $this->sellRate;
+    }
+
+    public function setBuyRate(?ExchangeRate $buyRate): void
+    {
+        $this->buyRate = $buyRate;
+    }
+
+    public function setSellRate(ExchangeRate $sellRate): void
+    {
+        $this->sellRate = $sellRate;
+    }
+
+    /**
+     * @Groups("read")
+     * @SerializedName("code")
+    */
+    public function getFlatCode(): string
+    {
+        return (string)$this->code;
+    }
+
+    /**
+     * @Groups("read")
+     * @SerializedName("name")
+     */
+    public function getFlatName(): string
+    {
+        return (string)$this->name;
+    }
+
+    /**
+     * @Groups("read")
+     * @SerializedName("nbpRate")
+     */
+    public function getFlatNbpRate(): float
+    {
+        return $this->nbpRate->getValue();
+    }
+
+    /**
+     * @Groups("read")
+     * @SerializedName("buyRate")
+     */
+    public function getFlatBuyRate(): ?float
+    {
+        return $this->buyRate ? $this->buyRate->getValue() : null;
+    }
+
+    /**
+     * @Groups("read")
+     * @SerializedName("sellRate")
+     */
+    public function getFlatSellRate(): float
+    {
+        return $this->sellRate->getValue();
     }
 }

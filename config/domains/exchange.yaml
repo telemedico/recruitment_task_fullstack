@@ -6,6 +6,17 @@ parameters:
     - code: IDR
     - code: BRL
 
+  exchange.rate_adjustments:
+    EUR:
+      buy: -0.05
+      sell: 0.07
+    USD:
+      buy: -0.05
+      sell: 0.07
+    default:
+      buy: ~
+      sell: 0.15
+
 services:
   _defaults:
     autowire: true
@@ -18,10 +29,13 @@ services:
   App\Exchange\Domain\Service\CurrencyRateApiClientInterface:
     alias: App\Exchange\Infrastructure\Http\NBPCurrencyRateApiClient
 
-  App\Exchange\Domain\Service\ExchangeRateCalculator: ~
   App\Exchange\Domain\Service\CurrencyServiceInterface:
     alias: App\Exchange\Application\Service\CurrencyService
 
   App\Exchange\Application\Service\CurrencyService:
     arguments:
       $currencies: '%exchange.currencies%'
+
+  App\Exchange\Domain\Service\ExchangeRateCalculator:
+    arguments:
+      $rateAdjustments: '%exchange.rate_adjustments%'
