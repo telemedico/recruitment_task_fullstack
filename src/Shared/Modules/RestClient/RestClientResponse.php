@@ -1,12 +1,9 @@
 <?php
-namespace App\Shared\RestClient;
-
 namespace App\Shared\Modules\RestClient;
 
-use App\Shared\Modules\RestClient\Exceptions\RestClientResponseException;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use App\Shared\Modules\RestClient\Exceptions\RestClientResponseException;
 
 class RestClientResponse
 {
@@ -17,46 +14,29 @@ class RestClientResponse
     {
         $this->response = $response;
         $this->serializer = $serializer;
+        $this->checkForErrors();
     }
 
-    public function retrieve(): self
+    private function checkForErrors(): void
     {
-        return $this;
+        $statusCode = $this->response->getStatusCode();
+        if ($statusCode >= 400) {
+            throw new RestClientResponseException("HTTP request failed with status code {$statusCode}", $statusCode);
+        }
     }
 
     public function toArray(): array
     {
-        $this->checkStatusCode();
-        return $this->response->toArray();
+        return json_decode($this->response->getContent(), true);
     }
 
-    public function toEntity(string $class)
+    public function toEntity(string $className)
     {
-        $this->checkStatusCode();
-        return $this->serializer->deserialize($this->response->getContent(), $class, 'json');
+        return $this->serializer->deserialize($this->response->getContent(), $className, 'json');
     }
 
-    public function toEntities(string $class): array
+    public function toEntities(string $className): array
     {
-        $this->checkStatusCode();
-        return $this->serializer->deserialize($this->response->getContent(), "array<{$class}>", 'json');
-    }
-
-    public function onStatus(int $statusCode, callable $callback): void
-    {
-        if ($this->response->getStatusCode() === $statusCode) {
-            $callback($this->response);
-        }
-    }
-
-    /**
-     * @throws TransportExceptionInterface
-     */
-    private function checkStatusCode(): void
-    {
-        $statusCode = $this->response->getStatusCode();
-        if ($statusCode >= 400) {
-            throw new RestClientResponseException("HTTP request failed with status code {$statusCode}");
-        }
+        return $this->serializer->deserialize($this->response->getContent(), $className . '[]', 'json');
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-
 namespace App\Exchange\Presentation\Controller;
 
+use App\Exchange\Application\Exception\NoExchangeRatesFoundException;
 use App\Exchange\Domain\Service\CurrencyServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,9 +27,17 @@ class ExchangeRatesController extends AbstractController
     public function getExchangeRates(string $date): JsonResponse
     {
         try {
-            $exchangeRates = $this->currencyService->getExchangeRates($date);
+            $dateTime = new \DateTimeImmutable($date);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Invalid date format.'], 400);
+        }
+
+        try {
+            $exchangeRates = $this->currencyService->getExchangeRates($dateTime);
             $serializedExchangeRates = $this->serializer->serialize($exchangeRates, 'json', ['groups' => ['read']]);
             return new JsonResponse($serializedExchangeRates, 200, [], true);
+        } catch (NoExchangeRatesFoundException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 404);
         } catch (\RuntimeException $e) {
             return new JsonResponse(['error' => $e->getMessage()], 500);
         }

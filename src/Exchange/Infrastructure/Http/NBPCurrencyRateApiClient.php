@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exchange\Infrastructure\Http;
 
 use App\Exchange\Domain\Service\CurrencyRateApiClientInterface;
@@ -22,18 +23,15 @@ class NBPCurrencyRateApiClient implements CurrencyRateApiClientInterface
      * Get exchange rates for a specific date.
      *
      * @param string $currency
-     * @param string $date
+     * @param \DateTimeImmutable $date
      * @return ApiCurrencyRate
      */
-    public function getExchangeRate(string $currency, string $date): object
+    public function getExchangeRate(string $currency, \DateTimeImmutable $date): object
     {
-        $url = sprintf(self::ENDPOINT, $currency, $date);
+        $url = sprintf(self::ENDPOINT, $currency, $date->format('Y-m-d'));
 
-        try {
-            $response = $this->restClient->get($url);
-            return $response->toEntity(ApiCurrencyRate::class);
-        } catch (RestClientRequestException | RestClientResponseException $e) {
-            throw new \RuntimeException(sprintf('Failed to fetch exchange rate for %s on %s: %s', $currency, $date, $e->getMessage()));
-        }
+        $response = $this->restClient->get($url);
+
+        return $response->toEntity(ApiCurrencyRate::class);
     }
 }

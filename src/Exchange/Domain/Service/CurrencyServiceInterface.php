@@ -9,8 +9,8 @@ interface CurrencyServiceInterface
     /**
      * Get exchange rates for a specific date.
      *
-     * @param string $date
+     * @param \DateTimeImmutable $date
      * @return CurrencyRate[]
      */
-    public function getExchangeRates(string $date): array;
+    public function getExchangeRates(\DateTimeImmutable $date): array;
 }

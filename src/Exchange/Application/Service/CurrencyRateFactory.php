@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Exchange\Application\Service;
 
 use App\Exchange\Domain\Model\CurrencyRate;
@@ -17,16 +16,18 @@ class CurrencyRateFactory
     {
         $this->exchangeRateCalculator = $exchangeRateCalculator;
     }
-    public function create(ApiCurrencyRate $apiRate, string $currencyCode): CurrencyRate
-    {
-        $nbpRate = new ExchangeRate($apiRate->getRate());
-        $currencyName = new CurrencyName($apiRate->getCurrency());
 
-        $buyRate = $this->exchangeRateCalculator->calculateBuyRate($currencyCode, $nbpRate->getValue());
-        $sellRate = $this->exchangeRateCalculator->calculateSellRate($currencyCode, $nbpRate->getValue());
+    public function create(ApiCurrencyRate $apiRate): CurrencyRate
+    {
+        $currencyCode = new CurrencyCode($apiRate->getCode());
+        $currencyName = new CurrencyName($apiRate->getCurrency());
+        $nbpRate = new ExchangeRate($apiRate->getRates()[0]->getMid());
+
+        $buyRate = $this->exchangeRateCalculator->calculateBuyRate($currencyCode->getValue(), $nbpRate->getValue());
+        $sellRate = $this->exchangeRateCalculator->calculateSellRate($currencyCode->getValue(), $nbpRate->getValue());
 
         return new CurrencyRate(
-            new CurrencyCode($currencyCode),
+            $currencyCode,
             $currencyName,
             $nbpRate,
             $buyRate ? new ExchangeRate($buyRate) : null,

@@ -10,8 +10,8 @@ interface CurrencyRateApiClientInterface
      * Get exchange rates for a specific date.
      *
      * @param string $currency
-     * @param string $date
+     * @param \DateTimeImmutable $date
      * @return ApiCurrencyRate
      */
-    public function getExchangeRate(string $currency, string $date): object;
+    public function getExchangeRate(string $currency, \DateTimeImmutable $date): object;
 }

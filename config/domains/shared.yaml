@@ -11,5 +11,5 @@ services:
 
   App\Shared\Modules\RestClient\RestClient:
     arguments:
-      $client: '@http_client'
+      $httpClient: '@http_client'
       $serializer: '@serializer'

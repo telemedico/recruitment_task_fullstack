@@ -21,6 +21,11 @@ class ApiCurrencyRate
      */
     private array $rates;
 
+    /**
+     * @param string $currency
+     * @param string $code
+     * @param ApiCurrencyRateRate[] $rates
+     */
     public function __construct(string $currency, string $code, array $rates)
     {
         $this->currency = $currency;
