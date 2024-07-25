@@ -1,12 +1,11 @@
-.trend-indicator {
-    display: flex;
-    align-items: center;
-}
-
-.text-success {
+.trend-up {
     color: green;
 }
 
-.text-danger {
+.trend-down {
     color: red;
+}
+
+.trend-neutral {
+    color: gray;
 }

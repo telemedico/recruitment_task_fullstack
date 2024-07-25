@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { fetchExchangeRates } from '../../api/exchangeRates';
+import ExchangeRatesTable from '../../components/ExchangeRatesTable/ExchangeRatesTable';
+import CurrencyCalculator from '../../components/CurrencyCalculator/CurrencyCalculator';
 import './ExchangeRatesPage.css';
-import {fetchExchangeRates} from "../../api/exchangeRates";
-import ExchangeRatesTable from "../../components/ExchangeRatesTable/ExchangeRatesTable";
-import CurrencyCalculator from "../../components/CurrencyCalculator/CurrencyCalculator";
 
 const ExchangeRatesPage = () => {
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-    const [rates, setRates] = useState(null);
+    const history = useHistory();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const initialDate = queryParams.get('date') || new Date().toISOString().split('T')[0];
+    const [date, setDate] = useState(initialDate);
+    const [todayRates, setTodayRates] = useState(null);
+    const [selectedDateRates, setSelectedDateRates] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [selectedCurrency, setSelectedCurrency] = useState(null);
@@ -16,8 +22,13 @@ const ExchangeRatesPage = () => {
             setLoading(true);
             setError(false);
             try {
-                const data = await fetchExchangeRates(date);
-                setRates(data);
+                const today = new Date().toISOString().split('T')[0];
+                const [todayData, selectedDateData] = await Promise.all([
+                    fetchExchangeRates(today),
+                    fetchExchangeRates(date)
+                ]);
+                setTodayRates(todayData);
+                setSelectedDateRates(selectedDateData);
             } catch (error) {
                 setError(true);
             } finally {
@@ -27,6 +38,30 @@ const ExchangeRatesPage = () => {
 
         loadRates();
     }, [date]);
+
+    useEffect(() => {
+        history.push(`?date=${date}`);
+    }, [date, history]);
+
+    const mergedRates = selectedDateRates?.map(rate => {
+        const todayRate = todayRates?.find(r => r.code === rate.code);
+        return {
+            ...rate,
+            todayNbpRate: todayRate ? todayRate.nbpRate : null,
+            todayBuyRate: todayRate ? todayRate.buyRate : null,
+            todaySellRate: todayRate ? todayRate.sellRate : null
+        };
+    });
+
+    const handleDateChange = (e) => {
+        const selectedDate = new Date(e.target.value);
+        const day = selectedDate.getUTCDay();
+        if (day !== 6 && day !== 0) {
+            setDate(e.target.value);
+        } else {
+            alert("Weekends are not selectable. Please choose a weekday.");
+        }
+    };
 
     return (
         <div className="exchange-rates-page container">
@@ -38,12 +73,12 @@ const ExchangeRatesPage = () => {
                             type="date"
                             className="form-control"
                             value={date}
-                            onChange={e => setDate(e.target.value)}
+                            onChange={handleDateChange}
                             min="2023-01-01"
                             max={new Date().toISOString().split('T')[0]}
                         />
                     </header>
-                    <ExchangeRatesTable rates={rates} loading={loading} error={error} onRowClick={setSelectedCurrency} />
+                    <ExchangeRatesTable rates={mergedRates} loading={loading} error={error} onRowClick={setSelectedCurrency} />
                 </div>
                 <div className="col-md-4">
                     {selectedCurrency && (

@@ -1,16 +1,14 @@
 import React from 'react';
 import './TrendIndicator.css';
 
-const TrendIndicator = ({ difference }) => {
-    const isPositive = difference >= 0;
-    const trendClass = isPositive ? 'text-success' : 'text-danger';
-    const iconClass = isPositive ? 'fa-arrow-up' : 'fa-arrow-down';
-
-    return (
-        <div className={`trend-indicator ${trendClass}`}>
-            <i className={`fas ${iconClass}`}></i> &nbsp; {difference.toFixed(4)}
-        </div>
-    );
+const TrendIndicator = ({ value }) => {
+    if (value > 0) {
+        return <span className="trend-up">↑ {value.toFixed(4)}</span>;
+    } else if (value < 0) {
+        return <span className="trend-down">↓ {Math.abs(value).toFixed(4)}</span>;
+    } else {
+        return <span className="trend-neutral">→ {value.toFixed(4)}</span>;
+    }
 };
 
 export default TrendIndicator;

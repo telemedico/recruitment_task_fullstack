@@ -23,3 +23,19 @@
 .text-right {
     text-align: right;
 }
+
+.today-column {
+    background-color: #e6f7ff !important;
+}
+
+.selected-column {
+    background-color: #fff7e6 !important;
+}
+
+th.today-column {
+    background-color: #007df8 !important;
+}
+
+th.selected-column {
+    background-color: #ffac00 !important;
+}

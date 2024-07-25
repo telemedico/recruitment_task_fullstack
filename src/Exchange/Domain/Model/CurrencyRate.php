@@ -43,12 +43,6 @@ final class CurrencyRate
      */
     private $sellRate;
 
-    /**
-     * @Groups("write")
-     * @var ExchangeTrend
-     */
-    private $trend;
-
     public function __construct(
         CurrencyCode $code,
         CurrencyName $name,
@@ -141,19 +135,5 @@ final class CurrencyRate
     public function getFlatSellRate(): float
     {
         return $this->sellRate->getValue();
-    }
-
-    /**
-     * @Groups("read")
-     * @SerializedName("trend")
-     */
-    public function getTrend(): float
-    {
-        return $this->trend->getValue();
-    }
-    public function setTrend(float $difference): self
-    {
-        $this->trend = new ExchangeTrend($difference);
-        return $this;
     }
 }
