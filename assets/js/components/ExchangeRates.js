@@ -71,10 +71,10 @@ function ExchangeRates() {
                         <tr>
                             <td>{dateData.currency || 'N/A'}</td>
                             <td>{dateData.code || 'N/A'}</td>
-                            <td>{dateData.buy !== null ? dateData.buy : 'N/A'}</td>
-                            <td>{dateData.sell !== null ? dateData.sell : 'N/A'}</td>
-                            <td>{todayData.buy !== null ? todayData.buy : 'N/A'}</td>
-                            <td>{todayData.sell !== null ? todayData.sell : 'N/A'}</td>
+                            <td>{dateData.buy || 'N/A'}</td>
+                            <td>{dateData.sell || 'N/A'}</td>
+                            <td>{todayData.buy || 'N/A'}</td>
+                            <td>{todayData.sell || 'N/A'}</td>
                         </tr>
                     );
                 })}
