@@ -96,7 +96,7 @@ function ExchangeRates() {
                                 <span>Currencies for {displayDate}</span>
                             </h2>
 
-                            <div className="text-center mt-3">
+                            <div className="text-center mt-3 date-picker-container">
                                 <DatePicker
                                     selected={date}
                                     onChange={handleDateChange}
