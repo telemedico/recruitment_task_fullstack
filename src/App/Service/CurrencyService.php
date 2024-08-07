@@ -4,7 +4,6 @@ namespace App\Service;
 
 use App\Exception\CurrencyException;
 use DateTime;
-use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
@@ -29,11 +28,11 @@ class CurrencyService
         'BRL' => self::CURRENCY_FACTOR['DEFAULT'],
     ];
 
-    private $client;
+    private $nbpApiService;
 
-    public function __construct(Client $client)
+    public function __construct(NbpApiService $nbpApiService)
     {
-        $this->client = $client;
+        $this->nbpApiService = $nbpApiService;
     }
 
     /**
@@ -48,21 +47,9 @@ class CurrencyService
         }
 
         try {
-            $todayCurrencies = $this->client->request(
-                'GET',
-                'http://api.nbp.pl/api/exchangerates/tables/A/today/',
-                ['headers' => ['Accept' => 'application/json']]
-            );
-
-            $dateCurrencies = $this->client->request(
-                'GET',
-                "http://api.nbp.pl/api/exchangerates/tables/A/{$date->format('Y-m-d')}",
-                ['headers' => ['Accept' => 'application/json']]
-            );
-
             return [
-                'today' => $this->prepareCurrencies(json_decode($todayCurrencies->getBody()->getContents(), true)[0]),
-                'date'  => $this->prepareCurrencies(json_decode($dateCurrencies->getBody()->getContents(), true)[0]),
+                'today' => $this->prepareCurrencies($this->nbpApiService->httpGet('today')),
+                'date'  => $this->prepareCurrencies($this->nbpApiService->httpGet($date->format('Y-m-d'))),
             ];
         } catch (Throwable $e) {
             throw new CurrencyException('Nie udało się pobrać danych dla wybranego dnia', Response::HTTP_BAD_REQUEST);

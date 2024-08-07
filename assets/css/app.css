@@ -4,4 +4,7 @@ body {
 
 .date-picker-container input {
     cursor: pointer;
+    width: 110px;
+    top: -5px;
+    position: relative;
 }

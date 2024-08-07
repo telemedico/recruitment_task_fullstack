@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import {useLocation, useHistory} from 'react-router-dom';
+import {useHistory, useLocation} from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import config from '../config';
@@ -68,7 +68,7 @@ function ExchangeRates() {
                     const dateData = date[key] || {};
 
                     return (
-                        <tr key={key}>
+                        <tr>
                             <td>{dateData.currency || 'N/A'}</td>
                             <td>{dateData.code || 'N/A'}</td>
                             <td>{dateData.buy !== null ? dateData.buy : 'N/A'}</td>
@@ -84,7 +84,6 @@ function ExchangeRates() {
     };
 
     const minDate = new Date('2023-01-01');
-    const displayDate = !date || date === today ? 'today' : date;
 
     return (
         <div>
@@ -92,19 +91,17 @@ function ExchangeRates() {
                 <div className="container">
                     <div className="row mt-5">
                         <div className="col-md-8 offset-md-2">
-                            <h2 className="text-center">
-                                <span>Currencies for {displayDate}</span>
-                            </h2>
-
-                            <div className="text-center mt-3 date-picker-container">
+                            <h2 className="text-center date-picker-container">
+                                <span>Currencies for </span>
                                 <DatePicker
                                     selected={date}
                                     onChange={handleDateChange}
                                     dateFormat="yyyy-MM-dd"
                                     minDate={minDate}
                                     maxDate={today}
+                                    className="form-control"
                                 />
-                            </div>
+                            </h2>
 
                             {loading ? (
                                 <div className={'text-center'}>
