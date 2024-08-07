@@ -18,17 +18,17 @@ class ExchangeRatesTest extends WebTestCase
         $response = $client->getResponse();
         $this->assertJson($response->getContent());
         $responseData = json_decode($response->getContent(), true);
-        $this->assertArrayHasKey('today', $responseData);
-        $this->assertArrayHasKey('date', $responseData);
 
-        foreach (['today', 'date'] as $item) {
+        foreach (['today', 'date'] as $key) {
+            $this->assertArrayHasKey($key, $responseData);
+
             foreach (self::SUPPORTED_CURRENCIES as $currency) {
-                $this->assertArrayHasKey($currency, $responseData[$item]);
-                $this->assertArrayHasKey('currency', $responseData[$item][$currency]);
-                $this->assertArrayHasKey('code', $responseData[$item][$currency]);
-                $this->assertArrayHasKey('mid', $responseData[$item][$currency]);
-                $this->assertArrayHasKey('buy', $responseData[$item][$currency]);
-                $this->assertArrayHasKey('sell', $responseData[$item][$currency]);
+                $this->assertArrayHasKey($currency, $responseData[$key]);
+                $this->assertArrayHasKey('currency', $responseData[$key][$currency]);
+                $this->assertArrayHasKey('code', $responseData[$key][$currency]);
+                $this->assertArrayHasKey('mid', $responseData[$key][$currency]);
+                $this->assertArrayHasKey('buy', $responseData[$key][$currency]);
+                $this->assertArrayHasKey('sell', $responseData[$key][$currency]);
             }
         }
 
