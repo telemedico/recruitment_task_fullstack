@@ -8,6 +8,11 @@ setupcheck:
     path: /api/setup-check
     controller: App\Controller\DefaultController::setupCheck
 
+currency:
+    path: /api/get-currencies
+    controller: App\Controller\ExchangeRatesController::getCurrencies
+    methods: [GET]
+
 index:
     path: /{wildcard}
     defaults: {
