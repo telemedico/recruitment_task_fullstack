@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Exception\CurrencyException;
 use DateTime;
 use GuzzleHttp\Client;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class CurrencyService
@@ -35,6 +36,11 @@ class CurrencyService
         $this->client = $client;
     }
 
+    /**
+     * @param DateTime|null $date
+     * @return array[]
+     * @throws CurrencyException
+     */
     public function getCurrenciesForDate(?DateTime $date = null): array
     {
         if (null === $date) {
@@ -59,7 +65,7 @@ class CurrencyService
                 'date'  => $this->prepareCurrencies(json_decode($dateCurrencies->getBody()->getContents(), true)[0]),
             ];
         } catch (Throwable $e) {
-            return ['error' => 'Nie udało się pobrać danych dla wybranego dnia'];
+            throw new CurrencyException('Nie udało się pobrać danych dla wybranego dnia', Response::HTTP_BAD_REQUEST);
         }
     }
 

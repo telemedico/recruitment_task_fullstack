@@ -28,10 +28,10 @@ function ExchangeRates() {
                 const response = await axios.get(config.baseUrl + '/api/get-currencies', {
                     params: {date: date}
                 });
+
                 setData(response.data);
             } catch (error) {
-                console.error(error);
-                setData(null);
+                setData(error.response.data);
             } finally {
                 setLoading(false);
             }

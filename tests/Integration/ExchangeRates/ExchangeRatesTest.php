@@ -4,6 +4,7 @@ namespace Integration\ExchangeRates;
 
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExchangeRatesTest extends WebTestCase
 {
@@ -36,12 +37,11 @@ class ExchangeRatesTest extends WebTestCase
 
     public function testGetExchangeRatesNoData(): void
     {
-        $client = static::createClient();
+        $client   = static::createClient();
+        $tomorrow = new DateTime('tomorrow');
 
-        $date = new DateTime('tomorrow');
-
-        $client->request('GET', '/api/get-currencies', ['date' => $date->format('Y-m-d')]);
-        $this->assertResponseIsSuccessful();
+        $client->request('GET', '/api/get-currencies', ['date' => $tomorrow->format('Y-m-d')]);
+        $this->assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
         $response = $client->getResponse();
         $this->assertJson($response->getContent());
         $responseData = json_decode($response->getContent(), true);
