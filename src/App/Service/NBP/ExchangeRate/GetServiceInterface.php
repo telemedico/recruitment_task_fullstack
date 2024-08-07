@@ -2,7 +2,7 @@
 
 namespace App\Service\NBP\ExchangeRate;
 
-use App\DTO\NBP\ExchangeRateDTO;
+use App\DTO\NBP\ExchangeRatesDTO;
 use DateTime;
 
 interface GetServiceInterface
@@ -10,7 +10,7 @@ interface GetServiceInterface
     /**
      * @param DateTime $date
      *
-     * @return ExchangeRateDTO
+     * @return ExchangeRatesDTO
      */
-    public function getExchangeRateDTOByDate(DateTime $date): ExchangeRateDTO;
+    public function getExchangeRateDTOByDate(DateTime $date): ExchangeRatesDTO;
 }

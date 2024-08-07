@@ -2,7 +2,7 @@
 
 namespace App\DTO\NBP;
 
-class ExchangeRateDTO
+class ExchangeRatesDTO
 {
 
 }

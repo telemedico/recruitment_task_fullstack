@@ -2,7 +2,7 @@
 
 namespace Unit\App\Service\NBP\ExchangeRate;
 
-use App\DTO\NBP\ExchangeRateDTO;
+use App\DTO\NBP\ExchangeRatesDTO;
 use App\Exception\NBPException;
 use App\Service\NBP\ExchangeRate\GetService;
 use DateTime;
@@ -30,7 +30,7 @@ class GetServiceTest extends TestCase
 
         $result = $getServiceMock->getExchangeRateDTOByDate(new DateTime());
 
-        $this->assertInstanceOf(ExchangeRateDTO::class, $result);
+        $this->assertInstanceOf(ExchangeRatesDTO::class, $result);
     }
 
     private function getMockedGetService(): GetService
