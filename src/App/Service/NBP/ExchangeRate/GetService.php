@@ -2,63 +2,79 @@
 
 namespace App\Service\NBP\ExchangeRate;
 
-use App\DTO\NBP\ExchangeRatesDTO;
+use App\DTO\NBP\ExchangeRates\DTO;
+use App\DTO\NBP\ExchangeRates\RequestDTO;
 use App\Repository\API\NBP\ExchangeRateRepositoryInterface;
 use App\Service\NBP\ExchangeRate\DTO\FactoryServiceInterface;
-use DateTime;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Contracts\Cache\ItemInterface;
+use Throwable;
 
 class GetService implements GetServiceInterface
 {
-    /** @var CacheServiceInterface */
-    private $cacheService;
     /** @var ExchangeRateRepositoryInterface */
     private $exchangeRateRepository;
     /** @var FactoryServiceInterface */
     private $factoryService;
 
+    /** @var FilesystemAdapter */
+    private $cache;
+
     public function __construct(
-        CacheServiceInterface           $cacheService,
         ExchangeRateRepositoryInterface $exchangeRateRepository,
         FactoryServiceInterface         $factoryService
     )
     {
-        $this->cacheService = $cacheService;
         $this->exchangeRateRepository = $exchangeRateRepository;
         $this->factoryService = $factoryService;
+
+        $this->cache = new FilesystemAdapter();
     }
 
     /** {@inheritDoc} */
-    public function getExchangeRateDTOByDate(DateTime $date): ExchangeRatesDTO
+    public function getExchangeRateDTOByRequestDTO(RequestDTO $requestDTO): DTO
     {
-        $exchangeRatesDTO = $this->cacheService->getCachedExchangeRatesDTOByDate($date);
+        return $this->cache->get(
+            $this->prepareNBPExchangeRatesCacheKey($requestDTO),
+            function (ItemInterface $item) use ($requestDTO) {
+                $item->expiresAfter(null);
 
-        if ($exchangeRatesDTO) {
-            return $exchangeRatesDTO;
-        }
+                return $this->prepareExchangeRateDTO($requestDTO);
+            });
+    }
 
-        $exchangeRatesDTO = $this->prepareExchangeRateDTO($date);
-
-        $this->cacheService->setCacheByExchangeRatesDTO($exchangeRatesDTO);
-
-        return $exchangeRatesDTO;
+    private function prepareNBPExchangeRatesCacheKey(RequestDTO $requestDTO): string
+    {
+        return sprintf(
+            self::NBP_EXCHANGE_RATE_CACHE_KEY_PATTERN,
+            $requestDTO->getDate()->format(self::CACHE_KEY_DATE_FORMAT)
+        );
     }
 
     /**
-     * @param DateTime $date
+     * @param RequestDTO $requestDTO
      *
-     * @return ExchangeRatesDTO
+     * @return DTO
      *
-     * @throws NotFoundHttpException
+     * @throws Throwable
      */
-    private function prepareExchangeRateDTO(DateTime $date): ExchangeRatesDTO
+    private function prepareExchangeRateDTO(RequestDTO $requestDTO): DTO
     {
-        $apiNBPData = $this->exchangeRateRepository->getRatesByTableAndDate($date);
+        $apiNBPData = $this->exchangeRateRepository->getRatesByTableAndDate($requestDTO->getDate());
 
         if (!$apiNBPData) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException(
+                sprintf(
+                    'No NBP data found for %s',
+                    $requestDTO->getDate()->format(RequestDTO::DATE_FORMAT)
+                ),
+                null,
+                Response::HTTP_NOT_FOUND
+            );
         }
 
-        return $this->factoryService->createExchangeRatesDTOByResponseDataAndDate($apiNBPData, $date);
+        return $this->factoryService->createExchangeRatesDTO($apiNBPData, $requestDTO);
     }
 }

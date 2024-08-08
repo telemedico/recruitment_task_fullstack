@@ -18,7 +18,9 @@ class ExchangeRateRepository implements ExchangeRateRepositoryInterface
         $this->httpClient = $httpClient;
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     */
     public function getRatesByTableAndDate(DateTime $date, string $table = self::ENDPOINT_DEFAULT_TABLE_CODE): ?array
     {
         $client = $this->httpClient->request(
@@ -42,7 +44,7 @@ class ExchangeRateRepository implements ExchangeRateRepositoryInterface
         return sprintf(
             self::EXCHANGE_RATES_ENDPOINT_PATTERN,
             $table,
-            $date->format('Y-m-d')
+            $date->format(self::EXCHANGE_RATES_DATE_FORMAT)
         );
     }
 }

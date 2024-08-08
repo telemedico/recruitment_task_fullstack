@@ -2,19 +2,20 @@
 
 namespace App\Service\NBP\ExchangeRate\DTO;
 
-use App\DTO\NBP\ExchangeRatesDTO;
+use App\DTO\NBP\ExchangeRates\DTO;
+use App\DTO\NBP\ExchangeRates\RequestDTO;
 use DateTime;
 
 interface FactoryServiceInterface
 {
     /**
      * @param array $responseData
-     * @param DateTime $date
+     * @param RequestDTO $requestDTO
      *
-     * @return ExchangeRatesDTO
+     * @return DTO
      */
-    public function createExchangeRatesDTOByResponseDataAndDate(
-        array    $responseData,
-        DateTime $date
-    ): ExchangeRatesDTO;
+    public function createExchangeRatesDTO(
+        array      $responseData,
+        RequestDTO $requestDTO
+    ): DTO;
 }
