@@ -12,9 +12,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class FactoryServiceTest extends KernelTestCase
 {
+    private const FILEPATH_EXAMPLE_NBP_API_RESPONSE_SUCCESS = '/NBP/ExchangeRates/mock_nbp_api_response_success_small.json';
+
     /** @var MockObject|ParameterBagInterface */
     private $parameterBagMock;
 
@@ -44,19 +48,41 @@ class FactoryServiceTest extends KernelTestCase
                 ]
             ]);
 
+        $this->factoryMock
+            ->expects($this->exactly(4))
+            ->method('isSupported')
+            ->withAnyParameters()
+            ->willReturnOnConsecutiveCalls(true, true, false, false);
+
         $factoryServiceMock = $this->getMockedFactoryService([
-            $this->factoryMock
+            $this->factoryMock, $this->factoryMock
         ]);
 
         $result = $factoryServiceMock->createExchangeRatesDTO(
             json_decode(
-                $this->getTestFileContent(ExchangeRatesTest::FILEPATH_EXAMPLE_NBP_API_RESPONSE_SUCCESS),
+                $this->getTestFileContent(self::FILEPATH_EXAMPLE_NBP_API_RESPONSE_SUCCESS),
                 true
             ),
             $this->getMockedRequestDTO()
         );
 
         $this->assertInstanceOf(DTO::class, $result);
+    }
+
+    public function testCreateExchangeRatesDTOWhenIsWrongResponseData(): void
+    {
+        $factoryServiceMock = $this->getMockedFactoryService([
+            $this->factoryMock
+        ]);
+
+        $this->expectException(UnprocessableEntityHttpException::class);
+        $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
+        $this->expectExceptionMessage('Bad response data from NBP API');
+
+        $factoryServiceMock->createExchangeRatesDTO(
+            ['wrong', 'response', 'data'],
+            $this->getMockedRequestDTO()
+        );
     }
 
     private function getMockedFactoryService(array $factories): FactoryService

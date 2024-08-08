@@ -14,7 +14,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class ExchangeRatesTest extends WebTestCase
 {
-    public const FILEPATH_EXAMPLE_NBP_API_RESPONSE_SUCCESS = '/NBP/ExchangeRates/mock_nbp_api_response_success.json';
+    private const FILEPATH_EXAMPLE_NBP_API_RESPONSE_SUCCESS = '/NBP/ExchangeRates/mock_nbp_api_response_success.json';
     private const FILEPATH_EXAMPLE_ENDPOINT_RESPONSE_SUCCESS = '/NBP/ExchangeRates/mock_endpoint_response_success.json';
     private const API_RESOuRCE_ENDPOINT = '/api/exchange-rates';
 
