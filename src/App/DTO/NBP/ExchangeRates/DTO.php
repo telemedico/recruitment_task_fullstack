@@ -23,9 +23,6 @@ class DTO implements ArrayableInterface, JsonSerializable
     /** @var CurrencyDTO[] */
     private $supportedCurrencies = [];
 
-    /** @var DateTime */
-    private $ratesDateFrom;
-
     public function getSupportedCurrenciesConfig(): array
     {
         return $this->supportedCurrenciesConfig;
@@ -86,23 +83,10 @@ class DTO implements ArrayableInterface, JsonSerializable
         return $this;
     }
 
-    public function getRatesDateFrom(): DateTime
-    {
-        return $this->ratesDateFrom;
-    }
-
-    public function setRatesDateFrom(DateTime $ratesDateFrom): self
-    {
-        $this->ratesDateFrom = $ratesDateFrom;
-
-        return $this;
-    }
-
     public function toArray(): array
     {
         return [
             'date' => $this->getDate()->format(RequestDTO::DATE_FORMAT),
-            'ratesDateFrom' => $this->getRatesDateFrom()->format(RequestDTO::DATE_FORMAT),
             'buyableCurrencies' => $this->getBuyableCurrencies(),
             'supportedCurrencies' => $this->getSupportedCurrencies(),
         ];

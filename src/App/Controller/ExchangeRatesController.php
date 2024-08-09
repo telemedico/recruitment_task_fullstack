@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\DTO\NBP\ExchangeRates\RequestDTO;
+use App\Exception\NBPException;
 use App\Service\NBP\ExchangeRate\GetServiceInterface;
 use DateTime;
 use Psr\Cache\InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Throwable;
 
 class ExchangeRatesController extends AbstractController
@@ -23,16 +24,18 @@ class ExchangeRatesController extends AbstractController
     /** @var ParameterBagInterface */
     private $parameterBag;
 
-    /** @var DateTime */
-    private $configDateFrom;
+    /** @var LoggerInterface */
+    private $logger;
 
     public function __construct(
         GetServiceInterface   $getService,
-        ParameterBagInterface $parameterBag
+        ParameterBagInterface $parameterBag,
+        LoggerInterface $logger
     )
     {
         $this->getService = $getService;
         $this->parameterBag = $parameterBag;
+        $this->logger = $logger;
     }
 
     /**
@@ -48,20 +51,32 @@ class ExchangeRatesController extends AbstractController
             $exchangeRatesDTO = $this->getService
                 ->getExchangeRateDTOByRequestDTO(
                     $this->prepareRequestDTO($request)
-                )
-                ->setRatesDateFrom($this->configDateFrom);
+                );
 
             return new Response(
                 json_encode($exchangeRatesDTO),
                 Response::HTTP_OK,
                 ['Content-type' => 'application/json']
             );
-        } catch (Throwable $exception) {
+        } catch (NBPException $exception) {
             return new Response(
                 json_encode(['message' => $exception->getMessage()]),
-                !empty($exception->getCode())
-                    ? $exception->getCode()
-                    : Response::HTTP_INTERNAL_SERVER_ERROR,
+                $exception->getCode(),
+                ['Content-type' => 'application/json']
+            );
+        } catch (Throwable $exception) {
+            $this->logger->error(
+                'Unknown error exchange rates',
+                [
+                    'message' => $exception->getMessage(),
+                    'code' => $exception->getCode(),
+                    'trace' => $exception->getTraceAsString(),
+                ]
+            );
+
+            return new Response(
+                json_encode(['message' => 'Unknown error']),
+                Response::HTTP_INTERNAL_SERVER_ERROR,
                 ['Content-type' => 'application/json']
             );
         }
@@ -72,7 +87,7 @@ class ExchangeRatesController extends AbstractController
      *
      * @return RequestDTO
      *
-     * @throws UnprocessableEntityHttpException
+     * @throws NBPException
      */
     private function prepareRequestDTO(Request $request): RequestDTO
     {
@@ -85,16 +100,11 @@ class ExchangeRatesController extends AbstractController
      *
      * @return DateTime
      *
-     * @throws UnprocessableEntityHttpException
+     * @throws NBPException
      */
     private function getDateQueryParam(Request $request): DateTime
     {
         $date = $request->query->get('date');
-
-        $this->configDateFrom = DateTime::createFromFormat(
-            RequestDTO::DATE_FORMAT,
-            $this->parameterBag->get('nbp')['exchangeRates']['fromDate']
-        );
 
         if (!$date) {
             return new DateTime();
@@ -103,27 +113,29 @@ class ExchangeRatesController extends AbstractController
         $date = DateTime::createFromFormat(RequestDTO::DATE_FORMAT, $date);
 
         if (!$date) {
-            throw new UnprocessableEntityHttpException(
+            throw new NBPException(
                 'Invalid date format',
-                null,
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
         if ($date > (new DateTime())) {
-            throw new UnprocessableEntityHttpException(
+            throw new NBPException(
                 'The date cannot be later than today',
-                null,
                 Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if ($date < $this->configDateFrom) {
-            throw new UnprocessableEntityHttpException(
+        $configDateFrom = DateTime::createFromFormat(
+            RequestDTO::DATE_FORMAT,
+            $this->parameterBag->get('nbp')['exchangeRates']['fromDate']
+        );
+
+        if ($date < $configDateFrom ) {
+            throw new NBPException(
                 sprintf(
                     'The date cannot be earlier than %s',
-                    $this->configDateFrom->format(RequestDTO::DATE_FORMAT)
+                    $configDateFrom->format(RequestDTO::DATE_FORMAT)
                 ),
-                null,
                 Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }

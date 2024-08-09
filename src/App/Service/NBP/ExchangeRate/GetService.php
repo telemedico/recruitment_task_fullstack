@@ -4,11 +4,11 @@ namespace App\Service\NBP\ExchangeRate;
 
 use App\DTO\NBP\ExchangeRates\DTO;
 use App\DTO\NBP\ExchangeRates\RequestDTO;
+use App\Exception\NBPException;
 use App\Repository\API\NBP\ExchangeRateRepositoryInterface;
 use App\Service\NBP\ExchangeRate\DTO\FactoryServiceInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Cache\ItemInterface;
 use Throwable;
 
@@ -65,12 +65,11 @@ class GetService implements GetServiceInterface
         $apiNBPData = $this->exchangeRateRepository->getRatesByTableAndDate($requestDTO->getDate());
 
         if (!$apiNBPData) {
-            throw new NotFoundHttpException(
+            throw new NBPException(
                 sprintf(
                     'No NBP data found for %s',
                     $requestDTO->getDate()->format(RequestDTO::DATE_FORMAT)
                 ),
-                null,
                 Response::HTTP_NOT_FOUND
             );
         }

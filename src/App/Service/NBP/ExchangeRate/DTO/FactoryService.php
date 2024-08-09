@@ -4,10 +4,10 @@ namespace App\Service\NBP\ExchangeRate\DTO;
 
 use App\DTO\NBP\ExchangeRates\DTO;
 use App\DTO\NBP\ExchangeRates\RequestDTO;
+use App\Exception\NBPException;
 use App\Service\NBP\ExchangeRate\DTO\Factories\FactoryInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class FactoryService implements FactoryServiceInterface
 {
@@ -36,10 +36,9 @@ class FactoryService implements FactoryServiceInterface
     ): DTO
     {
         if (!isset($responseData[0]['rates'])) {
-            throw new UnprocessableEntityHttpException(
+            throw new NBPException(
                 'Bad response data from NBP API',
-                null,
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_NOT_FOUND
             );
         }
 

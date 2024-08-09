@@ -59,7 +59,7 @@ class ExchangeRatesTest extends WebTestCase
         $response = $client->getResponse();
 
         $this->assertJson($response->getContent());
-        $this->assertSame('{"message":"Test exception"}', $response->getContent());
+        $this->assertSame('{"message":"Unknown error"}', $response->getContent());
         $this->assertSame(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
     }
 
@@ -86,7 +86,7 @@ class ExchangeRatesTest extends WebTestCase
         $response = $client->getResponse();
 
         $this->assertJson($response->getContent());
-        $this->assertSame('{"message":"Test exception"}', $response->getContent());
+        $this->assertSame('{"message":"Unknown error"}', $response->getContent());
         $this->assertSame(Response::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
     }
 
@@ -158,6 +158,77 @@ class ExchangeRatesTest extends WebTestCase
         $this->assertSame(Response::HTTP_UNPROCESSABLE_ENTITY, $response->getStatusCode());
     }
 
+    public function testGetWhenNotFoundDataInNBPApi(): void
+    {
+        $client = static::createClient();
+
+        $this->responseMock
+            ->expects($this->once())
+            ->method('getStatusCode')
+            ->willReturn(Response::HTTP_NOT_FOUND);
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('request')
+            ->withAnyParameters()
+            ->willReturn($this->responseMock);
+
+        $container = static::$container;
+        $container->set(HttpClientInterface::class, $this->httpClientMock);
+
+        $this->cache->clear();
+
+        $client->request(
+            Request::METHOD_GET,
+            self::API_RESOuRCE_ENDPOINT,
+            ['date' => '2024-08-09',]
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertJson($response->getContent());
+        $this->assertSame('{"message":"No NBP data found for 2024-08-09"}', $response->getContent());
+        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
+
+    public function testGetWhenResponseDataFromNBPApiIsWrong(): void
+    {
+        $client = static::createClient();
+
+        $this->responseMock
+            ->expects($this->once())
+            ->method('getStatusCode')
+            ->willReturn(Response::HTTP_OK);
+
+        $this->responseMock
+            ->expects($this->once())
+            ->method('getContent')
+            ->willReturn('{"wrong": true, "is": "this"}');
+
+        $this->httpClientMock
+            ->expects($this->once())
+            ->method('request')
+            ->withAnyParameters()
+            ->willReturn($this->responseMock);
+
+        $container = static::$container;
+        $container->set(HttpClientInterface::class, $this->httpClientMock);
+
+        $this->cache->clear();
+
+        $client->request(
+            Request::METHOD_GET,
+            self::API_RESOuRCE_ENDPOINT,
+            ['date' => '2024-08-09',]
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertJson($response->getContent());
+        $this->assertSame('{"message":"Bad response data from NBP API"}', $response->getContent());
+        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
+
     public function testGetWhenDateIsNotSetAndIsSuccessResponse(): void
     {
         $client = static::createClient();
@@ -187,7 +258,8 @@ class ExchangeRatesTest extends WebTestCase
 
         $client->request(
             Request::METHOD_GET,
-            self::API_RESOuRCE_ENDPOINT
+            self::API_RESOuRCE_ENDPOINT,
+            ['date' => '2024-08-08',]
         );
 
         $response = $client->getResponse();

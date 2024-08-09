@@ -20,10 +20,6 @@ class DTOTest extends TestCase
         $this->assertInstanceOf(DateTime::class, $dto->getDate());
         $this->assertSame($dateMock, $dto->getDate());
 
-        $dto->setRatesDateFrom($dateMock);
-        $this->assertInstanceOf(DateTime::class, $dto->getRatesDateFrom());
-        $this->assertSame($dateMock, $dto->getRatesDateFrom());
-
         $dto->setBuyableCurrenciesConfig(['USD']);
         $this->assertIsArray($dto->getBuyableCurrenciesConfig());
         $this->assertSame('USD', $dto->getBuyableCurrenciesConfig()[0]);
@@ -46,15 +42,13 @@ class DTOTest extends TestCase
         $dateMock = new DateTime();
 
         $dto = (new DTO())
-            ->setDate($dateMock)
-            ->setRatesDateFrom($dateMock);
+            ->setDate($dateMock);
 
         $result = $dto->toArray();
 
         $this->assertIsArray($result);
         $this->assertSame([
             'date' => $dateMock->format('Y-m-d'),
-            'ratesDateFrom' => $dateMock->format('Y-m-d'),
             'buyableCurrencies' => [],
             'supportedCurrencies' => [],
         ], $result);
@@ -62,17 +56,16 @@ class DTOTest extends TestCase
 
     public function testJsonSerialize(): void
     {
-        $dateMock = new DateTime();
+        $dateMock = DateTime::createFromFormat('Y-m-d', '2024-08-08');
 
         $dto = (new DTO())
-            ->setDate($dateMock)
-            ->setRatesDateFrom($dateMock);
+            ->setDate($dateMock);
 
         $result = json_encode($dto->jsonSerialize());
 
         $this->assertJson($result);
         $this->assertSame(
-            '{"date":"2024-08-08","ratesDateFrom":"2024-08-08","buyableCurrencies":[],"supportedCurrencies":[]}',
+            '{"date":"2024-08-08","buyableCurrencies":[],"supportedCurrencies":[]}',
             $result
         );
     }

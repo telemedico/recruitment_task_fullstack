@@ -4,6 +4,7 @@ namespace Unit\App\Service\NBP\ExchangeRate;
 
 use App\DTO\NBP\ExchangeRates\DTO;
 use App\DTO\NBP\ExchangeRates\RequestDTO;
+use App\Exception\NBPException;
 use App\Repository\API\NBP\ExchangeRateRepositoryInterface;
 use App\Service\NBP\ExchangeRate\DTO\FactoryServiceInterface;
 use App\Service\NBP\ExchangeRate\GetService;
@@ -48,7 +49,7 @@ class GetServiceTest extends TestCase
 
         $getServiceMock = $this->getMockedGetService();
 
-        $this->expectException(NotFoundHttpException::class);
+        $this->expectException(NBPException::class);
         $this->expectExceptionCode(404);
         $this->expectErrorMessage('No NBP data found for 2024-07-07');
 

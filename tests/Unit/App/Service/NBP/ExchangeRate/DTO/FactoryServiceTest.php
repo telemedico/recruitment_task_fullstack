@@ -4,6 +4,7 @@ namespace Unit\App\Service\NBP\ExchangeRate\DTO;
 
 use App\DTO\NBP\ExchangeRates\DTO;
 use App\DTO\NBP\ExchangeRates\RequestDTO;
+use App\Exception\NBPException;
 use App\Service\NBP\ExchangeRate\DTO\Factories\FactoryInterface;
 use App\Service\NBP\ExchangeRate\DTO\FactoryService;
 use DateTime;
@@ -75,8 +76,8 @@ class FactoryServiceTest extends KernelTestCase
             $this->factoryMock
         ]);
 
-        $this->expectException(UnprocessableEntityHttpException::class);
-        $this->expectExceptionCode(Response::HTTP_BAD_REQUEST);
+        $this->expectException(NBPException::class);
+        $this->expectExceptionCode(Response::HTTP_NOT_FOUND);
         $this->expectExceptionMessage('Bad response data from NBP API');
 
         $factoryServiceMock->createExchangeRatesDTO(
