@@ -1,0 +1,4 @@
+services:
+
+  App\Gateway\AverageExchangeRatesGateway:
+    class: Integration\ExchangeRates\DummyAverageExchangeRatesGateway
