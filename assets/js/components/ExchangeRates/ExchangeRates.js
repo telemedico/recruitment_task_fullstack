@@ -205,6 +205,8 @@ export default class ExchangeRates extends Component {
         });
 
         if (result === false) {
+            this.setState({loading: false, dateInputValue: this.historicalExchangeRates.date});
+
             return;
         }
 
@@ -214,7 +216,7 @@ export default class ExchangeRates extends Component {
 
         this.setBrowserUrlDateQueryParam(this.historicalExchangeRates.date);
 
-        this.setState({loading: false, dateInputValue: this.historicalExchangeRates.date});
+        this.setState({loading: false, dateInputValue: date});
     }
 
     validateDateInputValue(date) {
@@ -270,7 +272,9 @@ export default class ExchangeRates extends Component {
                     <h1 className="exchange-rates-container-title">Tabela kursów</h1>
                 </div>
                 <div className="exchange-rates-container-row">
-                    {this.message}
+                    <div className="exchange-rates-container-message">
+                        {this.message}
+                    </div>
                 </div>
                 <div className="exchange-rates-container-row">
                     <div>
