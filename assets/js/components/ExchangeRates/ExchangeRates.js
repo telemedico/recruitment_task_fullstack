@@ -79,12 +79,12 @@ export default class ExchangeRates extends Component {
                 rows.push((<tr key={'bc -' + index}>
                     <td>{currency.code}</td>
                     <td>{currency.name}</td>
-                    <td>{currency.nbpMidRate}</td>
+                    <td id="exchange-rates-table-cell-left-border">{currency.nbpMidRate}</td>
                     <td>{currency.buyPrice}</td>
                     <td>{currency.sellPrice}</td>
                     {isHistoricalData
                         ? (<>
-                            <td>{this.historicalExchangeRates.buyableCurrencies[index].nbpMidRate}</td>
+                            <td id="exchange-rates-table-cell-left-border">{this.historicalExchangeRates.buyableCurrencies[index].nbpMidRate}</td>
                             <td>{this.historicalExchangeRates.buyableCurrencies[index].buyPrice}</td>
                             <td>{this.historicalExchangeRates.buyableCurrencies[index].sellPrice}</td>
 
@@ -99,12 +99,12 @@ export default class ExchangeRates extends Component {
                 rows.push((<tr key={'sc -' + index}>
                     <td>{currency.code}</td>
                     <td>{currency.name}</td>
-                    <td>{currency.nbpMidRate}</td>
+                    <td id="exchange-rates-table-cell-left-border">{currency.nbpMidRate}</td>
                     <td>-</td>
                     <td>{currency.sellPrice}</td>
                     {isHistoricalData
                         ? (<>
-                            <td>{this.historicalExchangeRates.supportedCurrencies[index].nbpMidRate}</td>
+                            <td id="exchange-rates-table-cell-left-border">{this.historicalExchangeRates.supportedCurrencies[index].nbpMidRate}</td>
                             <td>-</td>
                             <td>{this.historicalExchangeRates.supportedCurrencies[index].sellPrice}</td>
 
@@ -115,18 +115,33 @@ export default class ExchangeRates extends Component {
         }
 
         this.exchangeRatesTableRender = (
-            <table className="text-center">
+            <table className="exchange-rates-table text-center">
+                <thead>
+                <tr>
+                    <th colSpan={2}></th>
+                    <th colSpan={3} id="exchange-rates-table-cell-left-border">
+                        {this.firstAvaliableRates.date}
+                    </th>
+                    {isHistoricalData
+                        ? (
+                            <th colSpan={3} id="exchange-rates-table-cell-left-border">
+                                {this.historicalExchangeRates.date}
+                            </th>
+                        ) : (<></>)
+                    }
+                </tr>
+                </thead>
                 <thead>
                 <tr>
                     <th>Kod waluty</th>
                     <th>Nazwa</th>
-                    <th>Kurs NBP</th>
+                    <th id="exchange-rates-table-cell-left-border">Kurs NBP</th>
                     <th>Cena kupna</th>
                     <th>Cena sprzedaży</th>
                     {isHistoricalData
                         ? (
                             <>
-                                <th>Kurs NBP</th>
+                                <th id="exchange-rates-table-cell-left-border">Kurs NBP</th>
                                 <th>Cena kupna</th>
                                 <th>Cena sprzedaży</th>
                             </>
@@ -136,19 +151,6 @@ export default class ExchangeRates extends Component {
                 </thead>
 
                 <tbody>
-                <tr>
-                    <th colSpan={2}></th>
-                    <th colSpan={3}>
-                        {this.firstAvaliableRates.date}
-                    </th>
-                    {isHistoricalData
-                        ? (
-                            <th colSpan={3}>
-                                {this.historicalExchangeRates.date}
-                            </th>
-                        ) : (<></>)
-                    }
-                </tr>
                 {rows}
                 </tbody>
 
@@ -188,7 +190,7 @@ export default class ExchangeRates extends Component {
             }
         ).then(response => {
             if (typeof response.data.date === 'undefined') {
-                this.message = 'Błąd';
+                this.message = 'Błąd danych';
 
                 return false;
             }
@@ -196,6 +198,8 @@ export default class ExchangeRates extends Component {
             return response.data;
         }).catch(error => {
             console.log(error)
+
+            this.message = 'Błąd pobrania danych na dzień ' + date;
 
             return false;
         });
@@ -261,14 +265,14 @@ export default class ExchangeRates extends Component {
         }
 
         return (
-            <div>
-                <div>
-                    <h1>Tabela kursów kantoru</h1>
+            <div className="exchange-rates-container">
+                <div className="exchange-rates-container-row">
+                    <h1 className="exchange-rates-container-title">Tabela kursów</h1>
                 </div>
-                <div>
+                <div className="exchange-rates-container-row">
                     {this.message}
                 </div>
-                <div>
+                <div className="exchange-rates-container-row">
                     <div>
                         {
                             loading
@@ -278,7 +282,7 @@ export default class ExchangeRates extends Component {
                                     </div>
                                 ) : (
                                     <div>
-                                        <div>
+                                        <div className="exchange-rates-container-row">
                                             Wybierz date historyczną do porównania <input type="date" id="exchangeRatesDate"
                                                                                           name="exchangeRatesDate"
                                                                                           onChange={changeExchangeRatesDate}
