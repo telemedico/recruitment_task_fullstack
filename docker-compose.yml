@@ -4,6 +4,7 @@ services:
     # Aby pliki byly poprawnie synchronizowane między kontenerem a windowsem
     volumes:
       - ./:/var/www/html/
+      - vendors:/var/www/html/vendor
     build:
       context: .
       dockerfile: Dockerfile
@@ -15,3 +16,6 @@ services:
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
+
+volumes:
+  vendors:
