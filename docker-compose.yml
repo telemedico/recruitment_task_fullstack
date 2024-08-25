@@ -5,6 +5,7 @@ services:
     volumes:
       - ./:/var/www/html/
       - vendors:/var/www/html/vendor
+      - build:/var/www/html/public/build
     build:
       context: .
       dockerfile: Dockerfile
@@ -16,6 +17,20 @@ services:
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    depends_on:
+      - initializer
+
+  initializer:
+    container_name: recruitment-initializer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - build:/var/www/html/public/build
+    entrypoint: /bin/sh -c "cp -r /var/www/html/public/build/* /var/www/html/public/build/ || true"
+    command: []
+    restart: "no"
 
 volumes:
   vendors:
+  build:
