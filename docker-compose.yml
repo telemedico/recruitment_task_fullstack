@@ -30,6 +30,22 @@ services:
     environment:
       - NODE_ENV=development
 
+  # Use:
+  # $ docker compose --profile test run phpunit
+  # or
+  # $ docker compose --profile test run phpunit --filter MyTestClass::testMethod
+  phpunit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recruitment-phpunit
+    volumes:
+      - ./:/var/www/html/
+      - vendors:/var/www/html/vendor
+    entrypoint: ["php", "bin/phpunit"]
+    profiles:
+      - tests
+
 volumes:
   vendors:
   build:
