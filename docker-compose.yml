@@ -17,19 +17,18 @@ services:
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
-    depends_on:
-      - initializer
 
-  initializer:
-    container_name: recruitment-initializer
+  watcher:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: watcher.Dockerfile
+    container_name: recruitment-watcher
+    working_dir: /usr/src/app
     volumes:
-      - build:/var/www/html/public/build
-    entrypoint: /bin/sh -c "cp -r /var/www/html/public/build/* /var/www/html/public/build/ || true"
-    command: []
-    restart: "no"
+      - ./:/usr/src/app/
+      - build:/usr/src/app/public/build
+    environment:
+      - NODE_ENV=development
 
 volumes:
   vendors:
