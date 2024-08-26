@@ -1,5 +1,3 @@
-// ./assets/js/components/Home.js
-
 import React, {Component} from 'react';
 import {Route, Redirect, Switch, Link} from 'react-router-dom';
 import SetupCheck from "./SetupCheck";
