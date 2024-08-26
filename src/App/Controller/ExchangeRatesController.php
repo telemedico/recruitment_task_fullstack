@@ -139,7 +139,7 @@ class ExchangeRatesController extends AbstractController
             'table' => $data[0]['table'],
             'no' => $data[0]['no'],
             'effectiveDate' => $data[0]['effectiveDate'],
-            'rates' => $processedRates,
+            'rates' => array_values($processedRates),
         ];
 
         return new JsonResponse($filteredData);
