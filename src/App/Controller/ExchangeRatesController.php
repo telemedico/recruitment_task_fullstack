@@ -68,6 +68,12 @@ class ExchangeRatesController extends AbstractController
 {
     private const API_URL = 'https://api.nbp.pl/api/exchangerates';
 
+    public const ERR_MSGS = [
+        'NO_DATA' => 'No data available for the requested date',
+        'FETCHING_ERROR' => 'Error fetching exchange rate',
+        'UNSUPPORTED_CURRENCY' => 'Unsupported currency',
+    ];
+
     private const STD_SELL_MARGIN = 0.07;
     private const STD_BUY_MARGIN = 0.05;
 
@@ -104,7 +110,7 @@ class ExchangeRatesController extends AbstractController
 
         // Check if the currency is supported
         if (!in_array(strtoupper($currency), Currencies::SUPPORTED)) {
-            return new JsonResponse(['error' => 'Unsupported currency'], 400);
+            return new JsonResponse(['error' => self::ERR_MSGS['UNSUPPORTED_CURRENCY']], 400);
         }
 
         // Call the external API to get the exchange rate
@@ -128,11 +134,11 @@ class ExchangeRatesController extends AbstractController
 
                 // Handle specific case of "404 NotFound - Brak danych"
                 if ($statusCode === 404 && strpos($errorContent, 'Brak danych') !== false) {
-                    return new JsonResponse(['error' => 'No data available for the requested date'], $statusCode);
+                    return new JsonResponse(['error' => self::ERR_MSGS['NO_DATA']], $statusCode);
                 }
 
                 // Handle generic 404 NotFound or other errors
-                return new JsonResponse(['error' => 'Error fetching exchange rate'], $statusCode);
+                return new JsonResponse(['error' => self::ERR_MSGS['FETCHING_ERROR']], $statusCode);
             }
 
             $data = $response->toArray();  // Convert the response to an array
@@ -141,7 +147,7 @@ class ExchangeRatesController extends AbstractController
             return new JsonResponse($data);
 
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Error fetching exchange rate: ' . $e->getMessage()], 500);
+            return new JsonResponse(['error' => self::ERR_MSGS['FETCHING_ERROR'] . '\n' . $e->getMessage()], 500);
         }
     }
 }

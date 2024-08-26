@@ -4,6 +4,8 @@ namespace Integration\ExchangeRates;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+use App\Controller\ExchangeRatesController;
+
 class ExchangeRagesTest extends WebTestCase
 {
     public function testShowOneWithValidCurrencyAndDate(): void
@@ -33,7 +35,7 @@ class ExchangeRagesTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
 
         // Verify the error message
-        $this->assertEquals('Unsupported currency', $responseData['error']);
+        $this->assertEquals(ExchangeRatesController::ERR_MSGS['UNSUPPORTED_CURRENCY'], $responseData['error']);
     }
 
     public function testShowAllWithValidDate(): void
@@ -65,7 +67,7 @@ class ExchangeRagesTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
 
         // Assuming the API returns a specific message for weekends
-        $this->assertEquals('No data available for the requested date', $responseData['error']);
+        $this->assertEquals(ExchangeRatesController::ERR_MSGS['NO_DATA'], $responseData['error']);
     }
 
     public function testShowAllWithWeekendDate(): void
@@ -82,6 +84,6 @@ class ExchangeRagesTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
 
         // Verify the error message or appropriate response
-        $this->assertEquals('No data available for the requested date', $responseData['error']);
+        $this->assertEquals(ExchangeRatesController::ERR_MSGS['NO_DATA'], $responseData['error']);
     }
 }
