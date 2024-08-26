@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function DatePicker({ initialDate }) {
+function DatePicker({ initialDate, onDateChange }) {
   const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
@@ -10,7 +10,9 @@ function DatePicker({ initialDate }) {
   }, [initialDate]);
 
   const handleDateChange = (event) => {
-    setSelectedDate(event.target.value);
+    const newDate = event.target.value;
+    setSelectedDate(newDate);
+    onDateChange(newDate); // Notify parent of the date change
   };
 
   return (

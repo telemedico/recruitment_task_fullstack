@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import DatePicker from './DatePicker'; // Adjust the import path as necessary
 
 const ExchangeRates = () => {
     const { currency, currencyOrDate, date } = useParams(); // Get the parameters from the URL
+    const history = useHistory(); // Hook to manipulate history (URL)
     const [rates, setRates] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedDate, setSelectedDate] = useState(""); // State to hold the date
@@ -43,6 +44,17 @@ const ExchangeRates = () => {
             });
     }, [currency, currencyOrDate, date]); // Re-run effect when any of these params change
 
+    const handleDateChange = (newDate) => {
+        // Update the URL with the new date
+        if (currency) {
+            history.push(`/exchange-rates/${currency}/${newDate}`);
+        } else {
+            history.push(`/exchange-rates/${newDate}`);
+        }
+        // Optionally, trigger a manual reload if necessary
+        window.location.reload();
+    };
+
     if (loading) {
         return (
             <div>
@@ -70,7 +82,7 @@ const ExchangeRates = () => {
                         <div className="col-md-8 offset-md-2">
                             <h2 className="text-center"><span>Kursy Wymiany Walut</span></h2>
                             <div className="container">
-                                <DatePicker initialDate={selectedDate} />
+                                <DatePicker initialDate={selectedDate} onDateChange={handleDateChange} />
                                 <div className="table-responsive">
                                     <table className="table table-bordered table-striped">
                                         <thead>
