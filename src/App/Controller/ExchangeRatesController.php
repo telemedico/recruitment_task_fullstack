@@ -19,6 +19,8 @@ use DateTime;
  *   const EGP = 'EGP';
  *
  * Next to add this currency add it to SUPPORTED array.
+ *
+ * TODO: SUPPORTED and BASIC should be loaded from configuration yaml files.
  */
 class Currencies
 {
@@ -74,6 +76,7 @@ class ExchangeRatesController extends AbstractController
         'UNSUPPORTED_CURRENCY' => 'Unsupported currency',
     ];
 
+    //TODO: these margins should be loaded from configuration files
     private const STD_SELL_MARGIN = 0.07;
     private const STD_BUY_MARGIN = 0.05;
 
