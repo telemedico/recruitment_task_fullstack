@@ -131,7 +131,8 @@ class ExchangeRatesController extends AbstractController
                 'sell' => $sell,
             ];
         }, array_filter($data[0]['rates'], function ($rate) {
-            return in_array($rate['code'], Currencies::SUPPORTED);
+            return Currencies::isSupported(($rate['code']));
+            //NOTE: couldn't change this to `array_filter($data[0]['rates'], ['Currencies', 'isSupported'])`
         }));
 
         // Prepare the final response structure
