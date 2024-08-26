@@ -106,17 +106,37 @@ class ExchangeRatesController extends AbstractController
 
         $data = json_decode($response->getContent(), true);
 
-        // Filter the rates to include only supported currencies
-        $filteredRates = array_filter($data[0]['rates'], function ($rate) {
-            return in_array($rate['code'], Currencies::SUPPORTED);
-        });
+        // Filter the rates to include only supported currencies and calculate buy/sell rates
+        $processedRates = array_map(function ($rate) {
+            $currencyCode = $rate['code'];
+            $mid = $rate['mid'];
 
-        // Prepare the filtered data structure to match the original API response format
+            // Use the isBasic method to determine if the currency is BASIC
+            if (Currencies::isBasic($currencyCode)) {
+                $buy = $mid - self::STD_BUY_MARGIN;
+                $sell = $mid + self::STD_SELL_MARGIN;
+            } else {
+                $buy = null;
+                $sell = $mid + self::EXT_SELL_MARGIN;
+            }
+
+            return [
+                'currency' => $rate['currency'],
+                'code' => $currencyCode,
+                'mid' => $mid,
+                'buy' => $buy,
+                'sell' => $sell,
+            ];
+        }, array_filter($data[0]['rates'], function ($rate) {
+            return in_array($rate['code'], Currencies::SUPPORTED);
+        }));
+
+        // Prepare the final response structure
         $filteredData = [
             'table' => $data[0]['table'],
             'no' => $data[0]['no'],
             'effectiveDate' => $data[0]['effectiveDate'],
-            'rates' => array_values($filteredRates), // Reindex array to avoid gaps in keys
+            'rates' => $processedRates,
         ];
 
         return new JsonResponse($filteredData);
@@ -136,8 +156,33 @@ class ExchangeRatesController extends AbstractController
 
         // Call the external API to get the exchange rate
         $apiUrl = sprintf('%s/rates/A/%s/%s/?format=json', self::API_URL, strtoupper($currency), $date);
+        $response = $this->callAPI($apiUrl);
 
-        return self::callAPI($apiUrl);
+        // If the response has an error, return it as is
+        if ($response->getStatusCode() !== 200) {
+            return $response;
+        }
+
+        $data = json_decode($response->getContent(), true);
+
+        // Assuming the data array has only one item in the 'rates' array
+        $rateData = $data['rates'][0];
+        $mid = $rateData['mid'];
+
+        // Calculate buy and sell values based on whether the currency is BASIC or not
+        if (Currencies::isBasic($currency)) {
+            $buy = $mid - self::STD_BUY_MARGIN;
+            $sell = $mid + self::STD_SELL_MARGIN;
+        } else {
+            $buy = null;
+            $sell = $mid + self::EXT_SELL_MARGIN;
+        }
+
+        // Prepare the final response with the calculated values
+        $rateData['buy'] = $buy;
+        $rateData['sell'] = $sell;
+
+        return new JsonResponse($rateData);
     }
 
     private function callAPI(string $apiUrl): JsonResponse
