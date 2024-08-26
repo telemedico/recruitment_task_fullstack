@@ -4,9 +4,7 @@ import React, {Component} from 'react';
 import {Route, Redirect, Switch, Link} from 'react-router-dom';
 import SetupCheck from "./SetupCheck";
 
-class Home extends Component {
-
-    render() {
+const Home = () => {
         return (
             <div>
                 <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -25,8 +23,7 @@ class Home extends Component {
                     <Route path="/setup-check" component={SetupCheck} />
                 </Switch>
             </div>
-        )
-    }
+    );
 }
 
 export default Home;
