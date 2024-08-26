@@ -75,3 +75,10 @@ Natomiast nie wszystko działało od ręki, jest kilka rzeczy, które warto był
 1. Idąc od TDD, brakowało mi jakiegoś prostego sposobu uruchomienia testów automatycznych. Podobnie jak wcześniej - musiałbym instalować na hoście, więc dodałem profil `test` w docker-compose.yml, choć jest to dyskusyjne - może chcielibyśmy, żeby się to odpalało przy każdym `docker compose up -d`? Ogólnie zabieg ten ma też spory sens w perspektywie późniejszego montowania tego w CI/CD - taki zabieg dość konkretnie ułatwi integrację np. z GitLab CI/CD, a jednocześnie utrzyma izolację skryptu CI/CD, a faktycznej implementacji testów automatycznych (warstwa abstrakcji, tj. będzie można wymienić zawartość docker-compose.yml).
 
     Dodane w commicie 8b965aa.
+
+
+### Po zrobieniu zadania
+
+Ogólnie można by jeszcze popracować nad kodem, pewnie znajdą się gdzieś miejsca do optymalizacji i zrobienia czystszego kodu. Zajęło mi to takie dobre 2d+ i trochę mi już starczy. Fajnie byłoby dodać np. lokalizację i wszystkie human-readable stringi przerzucić do jakiejś libki typu `i18n`, dodać Jest po stronie UI do testów. Ogólnie jeszcze można by ten kod męczyć i rozbudowywać. Widzę, że pomyliłem się z pkt. 5 - nie wyświetlam na jednej stronie kursów wszystkich walut oraz kursów aktualnych, natomiast jest to zrealizowane w podstronach danej waluty. Gdyby to było zadanie biznesowe to bym poprawiał, ale skoro to zadanie rekrutacyjne, to może jest już ok?
+
+Aha i commitów też nie podpisywałem z lenistwa.
