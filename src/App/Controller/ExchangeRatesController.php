@@ -97,8 +97,29 @@ class ExchangeRatesController extends AbstractController
 
         // Call the external API to get the exchange rate
         $apiUrl = sprintf('%s/tables/A/%s/?format=json', self::API_URL, $date);
+        $response = $this->callAPI($apiUrl);
 
-        return self::callAPI($apiUrl);
+        // If the response has an error, return it as is
+        if ($response->getStatusCode() !== 200) {
+            return $response;
+        }
+
+        $data = json_decode($response->getContent(), true);
+
+        // Filter the rates to include only supported currencies
+        $filteredRates = array_filter($data[0]['rates'], function ($rate) {
+            return in_array($rate['code'], Currencies::SUPPORTED);
+        });
+
+        // Prepare the filtered data structure to match the original API response format
+        $filteredData = [
+            'table' => $data[0]['table'],
+            'no' => $data[0]['no'],
+            'effectiveDate' => $data[0]['effectiveDate'],
+            'rates' => array_values($filteredRates), // Reindex array to avoid gaps in keys
+        ];
+
+        return new JsonResponse($filteredData);
     }
 
     public function showOne(string $currency, string $date = null): JsonResponse

@@ -5,6 +5,7 @@ namespace Integration\ExchangeRates;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 use App\Controller\ExchangeRatesController;
+use App\Controller\Currencies;
 
 class ExchangeRagesTest extends WebTestCase
 {
@@ -85,5 +86,39 @@ class ExchangeRagesTest extends WebTestCase
 
         // Verify the error message or appropriate response
         $this->assertEquals(ExchangeRatesController::ERR_MSGS['NO_DATA'], $responseData['error']);
+    }
+
+    public function testShowAllOnlyReturnsSupportedCurrencies(): void
+    {
+        $client = static::createClient();
+
+        // Perform the request to a known date where we have control over the response
+        $client->request('GET', '/api/exchange-rates/2024-08-01');
+
+        // Assert response status code is successful
+        $this->assertResponseIsSuccessful();
+
+        // Get the response content and decode it to an array
+        $responseContent = $client->getResponse()->getContent();
+        $responseData = json_decode($responseContent, true);
+
+        // Define the expected supported currencies
+        $expectedCurrencies = Currencies::SUPPORTED;
+
+        // Extract the returned currencies from the response
+        $returnedCurrencies = array_column($responseData['rates'], 'code');
+
+        // Check that all returned currencies are supported
+        foreach ($returnedCurrencies as $currency) {
+            $this->assertContains($currency, $expectedCurrencies, "Currency {$currency} is not supported.");
+        }
+
+        // Check that all supported currencies are in the response
+        foreach ($expectedCurrencies as $currency) {
+            $this->assertContains($currency, $returnedCurrencies, "Supported currency {$currency} is missing in the response.");
+        }
+
+        // Check that the number of returned currencies matches the number of supported currencies
+        $this->assertCount(count($expectedCurrencies), $returnedCurrencies);
     }
 }
