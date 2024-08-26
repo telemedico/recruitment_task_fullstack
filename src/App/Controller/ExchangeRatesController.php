@@ -49,7 +49,7 @@ class Currencies
      * @param  string $currency 3 letter currency code, would be best if used from Currencies constants, e.g. Currencies::EUR
      * @return bool if supplied currency is supported
      */
-    public function isSupported(string $currency): bool
+    public static function isSupported(string $currency): bool
     {
         return in_array($currency, self::SUPPORTED, true);
     }
@@ -60,7 +60,7 @@ class Currencies
      * @param  string $currency 3 letter currency code, would be best if used from Currencies constants, e.g. Currencies::EUR
      * @return bool if supplied currency is supported and is within BASIC catalog
      */
-    public function isBasic(string $currency): bool
+    public static function isBasic(string $currency): bool
     {
         return in_array($currency, self::SUPPORTED, true) && in_array($currency, self::BASIC, true);
     }
@@ -148,45 +148,28 @@ class ExchangeRatesController extends AbstractController
 
     public function showOne(string $currency, string $date = null): JsonResponse
     {
-        // If date is not provided, use the current date as the default
-        if ($date === null || $date === 'today') {
-            $date = (new DateTime())->format('Y-m-d');
-        }
-
-        // Check if the currency is supported
-        if (!in_array(strtoupper($currency), Currencies::SUPPORTED)) {
+        if (!Currencies::isSupported(strtoupper($currency))) {
             return new JsonResponse(['error' => self::ERR_MSGS['UNSUPPORTED_CURRENCY']], 400);
         }
 
-        // Call the external API to get the exchange rate
-        $apiUrl = sprintf('%s/rates/A/%s/%s/?format=json', self::API_URL, strtoupper($currency), $date);
-        $response = $this->callAPI($apiUrl);
+        $response = $this->showAll($date);
 
-        // If the response has an error, return it as is
         if ($response->getStatusCode() !== 200) {
             return $response;
         }
 
         $data = json_decode($response->getContent(), true);
+        $filteredRate = array_filter($data['rates'], function ($rate) use ($currency) {
+            return $rate['code'] === strtoupper($currency);
+        });
 
-        // Assuming the data array has only one item in the 'rates' array
-        $rateData = $data['rates'][0];
-        $mid = $rateData['mid'];
-
-        // Calculate buy and sell values based on whether the currency is BASIC or not
-        if (Currencies::isBasic($currency)) {
-            $buy = $mid - self::STD_BUY_MARGIN;
-            $sell = $mid + self::STD_SELL_MARGIN;
-        } else {
-            $buy = null;
-            $sell = $mid + self::EXT_SELL_MARGIN;
+        if (empty($filteredRate)) {
+            return new JsonResponse(['error' => self::ERR_MSGS['NO_DATA']], 404);
         }
 
-        // Prepare the final response with the calculated values
-        $rateData['buy'] = $buy;
-        $rateData['sell'] = $sell;
+        $filteredRate = array_values($filteredRate)[0];
 
-        return new JsonResponse($rateData);
+        return new JsonResponse($filteredRate);
     }
 
     private function callAPI(string $apiUrl): JsonResponse

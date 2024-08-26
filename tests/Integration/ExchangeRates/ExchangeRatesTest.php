@@ -20,9 +20,11 @@ class ExchangeRagesTest extends WebTestCase
         $responseData = json_decode($response->getContent(), true);
 
         // Check if the necessary keys exist in the response data
-        $this->assertArrayHasKey('rates', $responseData);
         $this->assertArrayHasKey('currency', $responseData);
         $this->assertArrayHasKey('code', $responseData);
+        $this->assertArrayHasKey('mid', $responseData);
+        $this->assertArrayHasKey('buy', $responseData);
+        $this->assertArrayHasKey('sell', $responseData);
     }
 
     public function testShowOneWithUnsupportedCurrency(): void
