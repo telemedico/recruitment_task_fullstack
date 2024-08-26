@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function DatePicker({ initialDate, onDateChange }) {
+function DatePicker({ initialDate, onDateChange, disabled = false }) { // Add disabled prop
   const [selectedDate, setSelectedDate] = useState(initialDate);
 
   useEffect(() => {
@@ -10,7 +10,9 @@ function DatePicker({ initialDate, onDateChange }) {
   const handleDateChange = (event) => {
     const newDate = event.target.value;
     setSelectedDate(newDate);
-    onDateChange(newDate); // Notify parent of the date change
+    if (!disabled) {
+      onDateChange(newDate); // Notify parent of the date change only if not disabled
+    }
   };
 
   return (
@@ -22,6 +24,7 @@ function DatePicker({ initialDate, onDateChange }) {
         value={selectedDate}
         onChange={handleDateChange}
         placeholder="YYYY-MM-DD"
+        disabled={disabled} // Set input to disabled if the prop is true
       />
     </div>
   );
