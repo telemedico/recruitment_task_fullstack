@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 
 function DatePicker({ initialDate, onDateChange }) {
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(initialDate);
 
   useEffect(() => {
-    if (initialDate) {
-      setSelectedDate(initialDate);
-    }
+    setSelectedDate(initialDate);
   }, [initialDate]);
 
   const handleDateChange = (event) => {

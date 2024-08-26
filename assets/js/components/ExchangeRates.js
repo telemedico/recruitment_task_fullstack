@@ -12,6 +12,16 @@ const ExchangeRates = () => {
     useEffect(() => {
         let apiUrl;
 
+        // Determine the initial date
+        let initialDate = date || currencyOrDate;
+        if (!initialDate) {
+            const today = new Date().toISOString().split("T")[0];
+            initialDate = today;
+            setSelectedDate(today);
+        } else {
+            setSelectedDate(initialDate);
+        }
+
         // Determine the API URL based on the parameters
         if (!currency && !currencyOrDate && !date) {
             // No params: Fetch all exchange rates for the current day
@@ -19,7 +29,6 @@ const ExchangeRates = () => {
         } else if (currency && date) {
             // Both currency and date provided: Fetch exchange rate for the particular currency on the particular date
             apiUrl = `/api/exchange-rates/${currency}/${date}`;
-            setSelectedDate(date); // Set the date from the URL
         } else if (currencyOrDate) {
             // One parameter provided: it could be either currency or date
             const isCurrency = /^[A-Z]{3}$/.test(currencyOrDate);
@@ -27,7 +36,6 @@ const ExchangeRates = () => {
                 apiUrl = `/api/exchange-rates/${currencyOrDate}`;
             } else {
                 apiUrl = `/api/exchange-rates/${currencyOrDate}`;
-                setSelectedDate(currencyOrDate); // Set the date from the URL
             }
         }
 
@@ -51,8 +59,6 @@ const ExchangeRates = () => {
         } else {
             history.push(`/exchange-rates/${newDate}`);
         }
-        // Optionally, trigger a manual reload if necessary
-        window.location.reload();
     };
 
     if (loading) {
