@@ -104,8 +104,8 @@ const ExchangeRates = () => {
                                             {Array.isArray(rates)
                                                 ? rates.map((rate, index) => (
                                                     <tr key={index}>
-                                                        <td>{rate.currency}</td>
-                                                        <td>{rate.code}</td>
+                                                        <td>{rate.currency ?? 'N/A'}</td>
+                                                        <td>{rate.code ?? 'N/A'}</td>
                                                         <td>{rate.buy ? rate.buy.toFixed(4) : 'N/A'}</td>
                                                         <td>{rate.mid ? rate.mid.toFixed(4) : 'N/A'}</td>
                                                         <td>{rate.sell ? rate.sell.toFixed(4) : 'N/A'}</td>
@@ -113,8 +113,8 @@ const ExchangeRates = () => {
                                                   ))
                                                 : (
                                                     <tr>
-                                                        <td>{rates.currency}</td>
-                                                        <td>{rates.code}</td>
+                                                        <td>{rates.currency ?? 'N/A'}</td>
+                                                        <td>{rates.code ?? 'N/A'}</td>
                                                         <td>{rates.buy ? rates.buy.toFixed(4) : 'N/A'}</td>
                                                         <td>{rates.mid ? rates.mid.toFixed(4) : 'N/A'}</td>
                                                         <td>{rates.sell ? rates.sell.toFixed(4) : 'N/A'}</td>
