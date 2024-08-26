@@ -21,6 +21,8 @@ const Home = () => {
             </nav>
             <Switch>
                 <Route path="/setup-check" component={SetupCheck} />
+                <Route path="/exchange-rates/:currency/:date" component={ExchangeRates} />
+                <Route path="/exchange-rates/:currencyOrDate" component={ExchangeRates} />
                 <Route path="/exchange-rates" component={ExchangeRates} />
             </Switch>
         </div>
