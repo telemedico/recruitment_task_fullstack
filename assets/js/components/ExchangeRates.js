@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import DatePicker from './DatePicker'; // Adjust the import path as necessary
-import Loading from './Loading'; // Import the Loading component
-import ExchangeRateTable from './ExchangeRateTable'; // Import the ExchangeRateTable component
-import CurrentRateTable from './CurrentRateTable'; // Import the CurrentRateTable component
+import DatePicker from './DatePicker';
+import Loading from './Loading';
+import ExchangeRateTable from './ExchangeRateTable';
+import CurrentRateTable from './CurrentRateTable';
 
 const ExchangeRates = () => {
-    const { currency, currencyOrDate, date } = useParams(); // Get the parameters from the URL
-    const history = useHistory(); // Hook to manipulate history (URL)
+    const { currency, currencyOrDate, date } = useParams();
+    const history = useHistory();
     const [rates, setRates] = useState(null);
-    const [currentRates, setCurrentRates] = useState(null); // State to hold current date's rates
+    const [currentRates, setCurrentRates] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [selectedDate, setSelectedDate] = useState(""); // State to hold the date
-    const [todayDate, setTodayDate] = useState(new Date().toISOString().split("T")[0]); // State to hold today's date
+    const [currentRatesLoading, setCurrentRatesLoading] = useState(true);
+    const [selectedDate, setSelectedDate] = useState("");
+    const todayDate = new Date().toISOString().split("T")[0]
 
     useEffect(() => {
         let apiUrl;
@@ -35,12 +36,7 @@ const ExchangeRates = () => {
             apiUrl = `/api/exchange-rates/${currency}/${date}`;
         } else if (currencyOrDate) {
             // One parameter provided: it could be either currency or date
-            const isCurrency = /^[A-Z]{3}$/.test(currencyOrDate);
-            if (isCurrency) {
-                apiUrl = `/api/exchange-rates/${currencyOrDate}`;
-            } else {
-                apiUrl = `/api/exchange-rates/${currencyOrDate}`;
-            }
+            apiUrl = `/api/exchange-rates/${currencyOrDate}`;
         }
 
         // Fetch data for selected date
@@ -57,13 +53,16 @@ const ExchangeRates = () => {
 
         // Fetch data for current date if a specific currency and date are selected
         if (currency && date) {
+            setCurrentRatesLoading(true); // Set current rates loading to true before fetching
             fetch(`/api/exchange-rates/${currency}/${todayDate}`)
                 .then(response => response.json())
                 .then(data => {
                     setCurrentRates(data.rates || data);
+                    setCurrentRatesLoading(false); // Set to false once data is loaded
                 })
                 .catch(error => {
                     console.error('Error fetching the current rates:', error);
+                    setCurrentRatesLoading(false); // Ensure we stop loading even if there's an error
                 });
         }
     }, [currency, currencyOrDate, date, todayDate]); // Re-run effect when any of these params change
@@ -90,7 +89,7 @@ const ExchangeRates = () => {
                                 <div className="container">
                                     <DatePicker initialDate={selectedDate} onDateChange={handleDateChange} />
                                     <ExchangeRateTable rates={rates} selectedDate={selectedDate} />
-                                    {currency && date && currentRates && (
+                                    {currency && date && !currentRatesLoading && currentRates && (
                                         <CurrentRateTable currentRates={currentRates} todayDate={todayDate} />
                                     )}
                                 </div>
