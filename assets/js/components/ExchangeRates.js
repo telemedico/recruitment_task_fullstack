@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory, Link } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import DatePicker from './DatePicker'; // Adjust the import path as necessary
+import Loading from './Loading'; // Import the Loading component
+import ExchangeRateTable from './ExchangeRateTable'; // Import the ExchangeRateTable component
+import CurrentRateTable from './CurrentRateTable'; // Import the CurrentRateTable component
 
 const ExchangeRates = () => {
     const { currency, currencyOrDate, date } = useParams(); // Get the parameters from the URL
@@ -74,25 +77,6 @@ const ExchangeRates = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div>
-                <section className="row-section">
-                    <div className="container">
-                        <div className="row mt-5">
-                            <div className="col-md-8 offset-md-2">
-                                <h2 className="text-center"><span>Kursy Wymiany Walut</span></h2>
-                                <div className={'text-center'}>
-                                    <span className="fa fa-spin fa-spinner fa-4x"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        );
-    }
-
     return (
         <div>
             <section className="row-section">
@@ -100,80 +84,17 @@ const ExchangeRates = () => {
                     <div className="row mt-5">
                         <div className="col-md-8 offset-md-2">
                             <h2 className="text-center"><span>Kursy Wymiany Walut</span></h2>
-                            <div className="container">
-                                <DatePicker initialDate={selectedDate} onDateChange={handleDateChange} />
-                                <div className="table-responsive">
-                                    <table className="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Waluta</th>
-                                                <th>Kod</th>
-                                                <th>Kupno</th>
-                                                <th>Kurs średni</th>
-                                                <th>Sprzedaż</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {Array.isArray(rates)
-                                                ? rates.map((rate, index) => (
-                                                    <tr key={index}>
-                                                        <td>{rate.currency ?? 'N/A'}</td>
-                                                        <td>
-                                                            {rate.code ? (
-                                                                <Link to={`/exchange-rates/${rate.code}/${selectedDate || ''}`}>
-                                                                    {rate.code}
-                                                                </Link>
-                                                            ) : (
-                                                                'N/A'
-                                                            )}
-                                                        </td>
-                                                        <td>{rate.buy ? rate.buy.toFixed(4) : 'N/A'}</td>
-                                                        <td>{rate.mid ? rate.mid.toFixed(4) : 'N/A'}</td>
-                                                        <td>{rate.sell ? rate.sell.toFixed(4) : 'N/A'}</td>
-                                                    </tr>
-                                                  ))
-                                                : (
-                                                    <tr>
-                                                        <td>{rates.currency ?? 'N/A'}</td>
-                                                        <td>{rates.code ?? 'N/A'}</td>
-                                                        <td>{rates.buy ? rates.buy.toFixed(4) : 'N/A'}</td>
-                                                        <td>{rates.mid ? rates.mid.toFixed(4) : 'N/A'}</td>
-                                                        <td>{rates.sell ? rates.sell.toFixed(4) : 'N/A'}</td>
-                                                    </tr>
-                                                  )
-                                            }
-                                        </tbody>
-                                    </table>
+                            {loading ? (
+                                <Loading />
+                            ) : (
+                                <div className="container">
+                                    <DatePicker initialDate={selectedDate} onDateChange={handleDateChange} />
+                                    <ExchangeRateTable rates={rates} selectedDate={selectedDate} />
+                                    {currency && date && currentRates && (
+                                        <CurrentRateTable currentRates={currentRates} todayDate={todayDate} />
+                                    )}
                                 </div>
-                                {currency && date && currentRates && (
-                                    <div className="current-rates-section mt-5">
-                                        <h4 className="text-center">Aktualnie</h4>
-                                        <DatePicker initialDate={todayDate} disabled /> {/* Disabled DatePicker */}
-                                        <div className="table-responsive mt-3">
-                                            <table className="table table-bordered table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Waluta</th>
-                                                        <th>Kod</th>
-                                                        <th>Kupno</th>
-                                                        <th>Kurs średni</th>
-                                                        <th>Sprzedaż</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>{currentRates.currency ?? 'N/A'}</td>
-                                                        <td>{currentRates.code ?? 'N/A'}</td>
-                                                        <td>{currentRates.buy ? currentRates.buy.toFixed(4) : 'N/A'}</td>
-                                                        <td>{currentRates.mid ? currentRates.mid.toFixed(4) : 'N/A'}</td>
-                                                        <td>{currentRates.sell ? currentRates.sell.toFixed(4) : 'N/A'}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
