@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class NationalBankService
 {
-    const CACHE_EXPIRATION = 86400; // 24 hours
+    const CACHE_EXPIRATION = 86400;
 
     /**
      * @var HttpClientInterface
@@ -52,9 +52,9 @@ class NationalBankService
         $cacheKey = $this->generateCacheKey($date);
         $cacheItem = $this->cache->getItem($cacheKey);
 
-//        if ($cacheItem->isHit()) {
-//            return $cacheItem->get();
-//        }
+        if ($cacheItem->isHit()) {
+            return $cacheItem->get();
+        }
         $action = "exchangerates/tables/A/{$date}?format=json";
 
         try {
