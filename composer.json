@@ -19,6 +19,7 @@
   },
   "require": {
     "doctrine/annotations": "^1.14",
+    "doctrine/collections": "^1.8",
     "symfony/cache": "^4.4",
     "symfony/dotenv": "^4.4",
     "symfony/flex": "^1.21",
@@ -27,7 +28,8 @@
     "symfony/http-kernel": "^4.4",
     "symfony/twig-bundle": "^4.4.30",
     "symfony/webpack-encore-bundle": "^1.17",
-    "symfony/yaml": "^4.4"
+    "symfony/yaml": "^4.4",
+    "ext-json": "*"
   },
   "conflict": {
     "symfony/symfony": "*"

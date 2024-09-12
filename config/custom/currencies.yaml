@@ -1,0 +1,17 @@
+parameters:
+  currencies:
+    EUR:
+      purchase: 0.05
+      sale: 0.07
+    USD:
+      purchase: 0.05
+      sale: 0.07
+    CZK:
+      purchase: null
+      sale: 0.15
+    IDR:
+      purchase: null
+      sale: 0.15
+    BRL:
+      purchase: null
+      sale: 0.15

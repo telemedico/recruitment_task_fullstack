@@ -1,9 +1,9 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+# config/services.yaml
 parameters:
+    nbp_url: '%env(NBP_URL)%'
+
+imports:
+    - { resource: 'custom/currencies.yaml' }
 
 services:
     # default configuration for services in *this* file
@@ -26,5 +26,20 @@ services:
         autowire: true
         tags: ['controller.service_arguments']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Add factory service to create an HTTP client with base URL
+    App\Factory\HttpClientFactory:
+        arguments:
+            $baseUri: '%nbp_url%'
+
+    Symfony\Contracts\HttpClient\HttpClientInterface:
+        factory: ['@App\Factory\HttpClientFactory', 'createHttpClient']
+
+    # Define NationalBankService to use the HTTP client
+    App\Services\NationalBankService:
+        arguments:
+            $httpClient: '@Symfony\Contracts\HttpClient\HttpClientInterface'
+            $currencies: '%currencies%'
+
+    App\Controller\ExchangeRatesController:
+        arguments:
+            $currencies: '%currencies%'
