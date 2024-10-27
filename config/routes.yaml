@@ -4,9 +4,22 @@
 #  methods:  GET
 #
 
-setupcheck:
+setup_check:
     path: /api/setup-check
-    controller: App\Controller\DefaultController::setupCheck
+    controller: App\Controller\DefaultController:setupCheck
+    methods: [GET]
+
+
+exchange_rates_today:
+    path: /exchange-rates/today
+    controller: App\Controller\ExchangeRatesController::getTodayExchangeRates
+    methods: GET
+
+exchange_rates_by_date:
+    path: /exchange-rates/{date}
+    controller: App\Controller\ExchangeRatesController::getExchangeRatesByDate
+    methods: GET
+
 
 index:
     path: /{wildcard}
