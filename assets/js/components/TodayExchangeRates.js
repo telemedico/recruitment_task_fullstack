@@ -16,6 +16,7 @@ function TodayExchangeRates() {
                 <thead>
                 <tr>
                     <th>Waluta</th>
+                    <th>Nazwa waluty</th>
                     <th>Kurs NBP</th>
                     <th>Kurs Kupna</th>
                     <th>Kurs Sprzedaży</th>
@@ -25,6 +26,7 @@ function TodayExchangeRates() {
                 {rates.map(rate => (
                     <tr key={rate.currency}>
                         <td>{rate.currency}</td>
+                        <td>{rate.currencyName}</td>
                         <td>{rate.averageRate}</td>
                         <td>{rate.buyRate ?? "N/A"}</td>
                         <td>{rate.sellRate}</td>

@@ -3,13 +3,7 @@
 namespace App\Service;
 
 class Currency {
-    public const SUPPORTED_CURRENCIES = [
-        'EUR' => 'Euro',
-        'USD' => 'Dolar amerykański',
-        'CZK' => 'Korona czeska',
-        'IDR' => 'Rupia indonezyjska',
-        'BRL' => 'Real brazylijski',
-    ];
+    public const SUPPORTED_CURRENCIES = ['USD', 'EUR', 'GBP', 'CZK', 'BRL'];
 
     public static function assertCurrencyCode(string $code): void {
         if (!array_key_exists($code, self::SUPPORTED_CURRENCIES)) {
@@ -18,6 +12,19 @@ class Currency {
     }
 
     public static function getCurrencyName(string $code): string {
-        return self::SUPPORTED_CURRENCIES[$code] ?? 'Unknown';
+        switch ($code) {
+            case 'USD':
+                return 'Dolar amerykański';
+            case 'EUR':
+                return 'Euro';
+            case 'GBP':
+                return 'Funt brytyjski';
+            case 'CZK':
+                return 'Korona czeska';
+            case 'BRL':
+                return 'Real brazylijski';
+            default:
+                return 'Unknown';
+        }
     }
 }

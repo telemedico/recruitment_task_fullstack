@@ -30,7 +30,7 @@ function DateExchangeRates() {
                     className="form-control"
                     value={selectedDate}
                     onChange={handleDateChange}
-                    min="2024-10-11"
+                    min="2023-01-01"
                     max={new Date().toISOString().split('T')[0]}
                 />
             </div>
@@ -38,6 +38,7 @@ function DateExchangeRates() {
                 <thead>
                 <tr>
                     <th>Waluta</th>
+                    <th>Nazwa waluty</th>
                     <th>Kurs NBP</th>
                     <th>Kurs Kupna</th>
                     <th>Kurs Sprzedaży</th>
@@ -47,6 +48,7 @@ function DateExchangeRates() {
                 {rates.map(rate => (
                     <tr key={rate.currency}>
                         <td>{rate.currency}</td>
+                        <td>{rate.currencyName}</td>
                         <td>{rate.averageRate}</td>
                         <td>{rate.buyRate ?? "N/A"}</td>
                         <td>{rate.sellRate}</td>
