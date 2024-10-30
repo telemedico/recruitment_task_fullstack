@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Constant\Formats;
+use App\Exception\IncorrectDateException;
 use App\ExchangeRate\ApiResponse;
 use App\ExchangeRate\CurrencyExchangeClientFactory;
 use DateTime;
@@ -40,6 +41,12 @@ class ExchangeRatesController extends AbstractController
             $response = $this->generateResponse($date);
 
             return new ApiResponse($response);
+        } catch (IncorrectDateException $e) {
+            return new ApiResponse(
+                null,
+                "Can't get rates: {$e->getMessage()}",
+                Response::HTTP_BAD_REQUEST
+            );
         } catch (Exception $e) {
             $this->logger->error($e->getMessage(), $e->getTrace());
 
