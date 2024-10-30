@@ -12,10 +12,6 @@ interface ExchangeRateInterface
 
     public function setRate(float $rate);
 
-    public function getDate(): DateTime;
-
-    public function setDate(DateTime $date);
-
     public function getCurrency(): string;
 
     public function setCurrency(string $currency);

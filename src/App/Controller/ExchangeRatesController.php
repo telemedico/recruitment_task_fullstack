@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Constant\Formats;
 use App\Exception\IncorrectDateException;
 use App\ExchangeRate\ApiResponse;
 use App\ExchangeRate\CurrencyExchangeClientFactory;
@@ -34,7 +33,7 @@ class ExchangeRatesController extends AbstractController
         $this->logger = $logger;
     }
 
-    public function getRate(string $date): ApiResponse
+    public function getRates(string $date): ApiResponse
     {
         try {
             $date = new DateTime($date);
@@ -68,7 +67,6 @@ class ExchangeRatesController extends AbstractController
         foreach ($exchangeRate->getRates() as $rate) {
             $result[$rate->getCurrency()] = [
                 'rate' => $rate->getRate(),
-                'date' => $rate->getDate()->format(Formats::DEFAULT_DATE_FORMAT),
                 'buyRate' => $rate->getBuyingRate(),
                 'sellRate' => $rate->getSellingRate()
             ];

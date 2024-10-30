@@ -4,19 +4,12 @@ declare(strict_types = 1);
 
 namespace App\ExchangeRate\DTO;
 
-use DateTime;
-
 class ExchangeRate implements ExchangeRateInterface
 {
     /**
      * @var float
      */
     private $rate;
-
-    /**
-     * @var DateTime
-     */
-    private $date;
 
     /**
      * @var string
@@ -41,16 +34,6 @@ class ExchangeRate implements ExchangeRateInterface
     public function setRate(float $rate): void
     {
         $this->rate = $rate;
-    }
-
-    public function getDate(): DateTime
-    {
-        return $this->date;
-    }
-
-    public function setDate(DateTime $date): void
-    {
-        $this->date = $date;
     }
 
     public function getCurrency(): string

@@ -106,7 +106,6 @@ class NBPRestClient extends AbstractCurrencyExchangeClient implements CurrencyEx
             if (in_array(strtoupper($rateData['code']), $this->usedCurrencies)) {
                 $rate = new ExchangeRate();
                 $rate->setRate((float)$rateData['mid']);
-                $rate->setDate($this->date);
                 $rate->setCurrency((string)$rateData['code']);
 
                 $result[$rate->getCurrency()] = $rate;
