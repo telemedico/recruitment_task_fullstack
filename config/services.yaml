@@ -28,3 +28,53 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\ExchangeRate\UsedCurrenciesProvider:
+        arguments:
+            $usedCurrencies: ['USD', 'EUR', 'CZK', 'IDR', 'BRL']
+
+    app.exchangeRate.trade.strategies.defaultBuying:
+        class: App\ExchangeRate\Trade\Strategies\DefaultBuyingStrategy
+
+    app.exchangeRate.trade.strategies.defaultSelling:
+        class: App\ExchangeRate\Trade\Strategies\DefaultSellingStrategy
+
+    app.exchangeRate.trade.strategies.buyingStrategyOne:
+        class: App\ExchangeRate\Trade\Strategies\BuyingStrategyOne
+
+    app.exchangeRate.trade.strategies.sellingStrategyOne:
+        class: App\ExchangeRate\Trade\Strategies\SellingStrategyOne
+
+    app.exchangeRate.trade.tradeRateProvider:
+        class: App\ExchangeRate\Trade\TradeRateModifier
+        arguments:
+            $buyingRateCalcList: {
+                USD: '@app.exchangeRate.trade.strategies.buyingStrategyOne',
+                EUR: '@app.exchangeRate.trade.strategies.buyingStrategyOne',
+                CZK: '@app.exchangeRate.trade.strategies.defaultBuying',
+                IDR: '@app.exchangeRate.trade.strategies.defaultBuying',
+                BRL: '@app.exchangeRate.trade.strategies.defaultBuying'
+            }
+            $sellRateCalcList: {
+                USD: '@app.exchangeRate.trade.strategies.sellingStrategyOne',
+                EUR: '@app.exchangeRate.trade.strategies.sellingStrategyOne',
+                CZK: '@app.exchangeRate.trade.strategies.defaultSelling',
+                IDR: '@app.exchangeRate.trade.strategies.defaultSelling',
+                BRL: '@app.exchangeRate.trade.strategies.defaultSelling'
+            }
+
+    app.exchangeRate.http.currencyExchangeNBPRestClient:
+        class: App\ExchangeRate\Http\CurrencyExchangeNBPRestClient
+        arguments:
+            $apiEndpoint: 'https://api.nbp.pl/api/exchangerates/tables/A/{DATE}?format=json'
+
+    App\ExchangeRate\CurrencyExchangeClientFactory:
+        arguments:
+            $exchangeRateRequest: '@app.exchangeRate.http.currencyExchangeNBPRestClient'
+            $minDate: '2024-09-02'
+            $rateModifiers:
+                - '@app.exchangeRate.trade.tradeRateProvider'
+
+    App\EventListener\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
