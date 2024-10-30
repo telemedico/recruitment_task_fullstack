@@ -48,14 +48,14 @@ services:
     app.exchangeRate.trade.tradeRateProvider:
         class: App\ExchangeRate\Trade\TradeRateModifier
         arguments:
-            $buyingRateCalcList: {
+            $buyingRateCalcStrategies: {
                 USD: '@app.exchangeRate.trade.strategies.buyingStrategyOne',
                 EUR: '@app.exchangeRate.trade.strategies.buyingStrategyOne',
                 CZK: '@app.exchangeRate.trade.strategies.defaultBuying',
                 IDR: '@app.exchangeRate.trade.strategies.defaultBuying',
                 BRL: '@app.exchangeRate.trade.strategies.defaultBuying'
             }
-            $sellRateCalcList: {
+            $sellRateCalcStrategies: {
                 USD: '@app.exchangeRate.trade.strategies.sellingStrategyOne',
                 EUR: '@app.exchangeRate.trade.strategies.sellingStrategyOne',
                 CZK: '@app.exchangeRate.trade.strategies.defaultSelling',
@@ -64,14 +64,14 @@ services:
             }
 
     app.exchangeRate.http.currencyExchangeNBPRestClient:
-        class: App\ExchangeRate\Http\CurrencyExchangeNBPRestClient
+        class: App\ExchangeRate\Http\NBPRestClient
         arguments:
             $apiEndpoint: 'https://api.nbp.pl/api/exchangerates/tables/A/{DATE}?format=json'
 
     App\ExchangeRate\CurrencyExchangeClientFactory:
         arguments:
             $exchangeRateRequest: '@app.exchangeRate.http.currencyExchangeNBPRestClient'
-            $minDate: '2024-09-02'
+            $minDate: '2023-01-01'
             $rateModifiers:
                 - '@app.exchangeRate.trade.tradeRateProvider'
 

@@ -23,19 +23,19 @@ class TradeRateModifier implements ExchangeRatesRequestDataModifierInterface
     /**
      * @var CurrencyTradeRateCalculationInterface[]
      */
-    private $buyingRateCalcList;
+    private $buyingRateCalcStrategies;
 
     /**
      * @var CurrencyTradeRateCalculationInterface[]
      */
-    private $sellRateCalcList;
+    private $sellRateCalcStrategies;
 
     public function __construct(
-        array $buyingRateCalcList,
-        array $sellRateCalcList
+        array $buyingRateCalcStrategies,
+        array $sellRateCalcStrategies
     ) {
-        $this->buyingRateCalcList = $buyingRateCalcList;
-        $this->sellRateCalcList = $sellRateCalcList;
+        $this->buyingRateCalcStrategies = $buyingRateCalcStrategies;
+        $this->sellRateCalcStrategies = $sellRateCalcStrategies;
     }
 
     public function setBuyingCalcStrategy(CurrencyTradeRateCalculationInterface $buyingRateCalc): void
@@ -53,8 +53,8 @@ class TradeRateModifier implements ExchangeRatesRequestDataModifierInterface
      */
     public function modify(ExchangeRateInterface $rate): ExchangeRateInterface
     {
-        $buyingStrategy = $this->buyingRateCalcList[$rate->getCurrency()] ?? false;
-        $sellingStrategy = $this->sellRateCalcList[$rate->getCurrency()] ?? false;
+        $buyingStrategy = $this->buyingRateCalcStrategies[$rate->getCurrency()] ?? false;
+        $sellingStrategy = $this->sellRateCalcStrategies[$rate->getCurrency()] ?? false;
 
         if (!$buyingStrategy || !$sellingStrategy) {
             throw new NoCalculationStrategyException("Calculation strategy for {$rate->getCurrency()} doesn't exist.");
