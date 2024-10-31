@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Test\Unit\ExchangeRate\Http;
 
+use App\Constant\Formats;
 use App\Exception\IncorrectDateException;
 use App\ExchangeRate\DTO\ExchangeRate;
 use App\ExchangeRate\Http\NBPRestClient;
@@ -52,7 +53,7 @@ class NBPRestClientTest extends TestCase
 
         $this->cacheMock->expects($this->once())
             ->method('get')
-            ->with('NBPRestClient-USD-2024-10-30');
+            ->with('NBPRestClient-USD-' . (new DateTime())->format(Formats::DEFAULT_DATE_FORMAT));
 
         $result = $this->NBPRestClient->getRates();
 
