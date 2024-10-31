@@ -67,7 +67,8 @@ jakie mają nastąpić dla danych walut. Strategie te bazują na interfejsie ``\
 W ``services.yaml`` można podejrzeć jak wstrzyknięte są strategie wyliczania ceny sprzedaży/kupna dla danych walut.
 Nazwy tych strategii są dość enigmatyczne, bo nie znam za dobrze zasad, które stoją za ustawianiem danych stawek.
 Zapewne będąc bliżej danej domeny wiedziałbym, że np. dodawanie 0.07 do ceny sprzedaży to "Stadardowa Marża" i tak też
-bym nazwał daną strategię wyliczania.
+bym nazwał daną strategię wyliczania. Nic nie stoi na przeszkodzie aby te same klasy np. implementowały jakąś logikę, 
+która będzie ustalana przez jakieś UI. Na nasze potrzeby są to po prostu atomowe klasy z wbitą na sztywno logiką.
 
 ### Format zwracanych danych
 Chciałem zapewnić jednolity sposób zwracania danych poprzez API, stąd też utworzyłem klasę, która dane te zwraca
