@@ -46,7 +46,7 @@ class SetupCheck extends Component {
                                 ) : (
                                     <div className={'text-center'}>
                                         { this.state.setupCheck === true ? (
-                                            <h3 className={'text-success text-bold'}><strong>React app works!</strong></h3>
+                                            <h3 className={'text-success text-bold'}><strong>React app works2!</strong></h3>
                                         ) : (
                                             <h3 className={'text-error text-bold'}><strong>React app doesn't work :(</strong></h3>
                                         )}

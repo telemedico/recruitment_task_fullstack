@@ -1,0 +1,57 @@
+.exchangeRateTile__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border-bottom: 2px solid #2b2a2a;
+  padding: 20px 0;
+}
+.exchangeRateTile__cell,
+.exchangeRateTile__cell div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+  text-align: center;
+}
+.exchangeRateTile__currentValues,
+.exchangeRateTile__previousValues {
+  flex-direction: column;
+}
+.exchangeRateTile__previousValues {
+  color: #2b2a2a;
+}
+
+.exchangeRateTile__sellBuyContainer {
+  gap: 20px;
+}
+
+.button {
+  padding: 15px 30px;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 10px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  background-color: #2b2a2a;
+}
+
+.button:disabled:hover {
+  filter: brightness(1);
+}
+
+.button:hover {
+  filter: brightness(1.2);
+}
+.buyButton {
+  background-color: #005c00;
+}
+
+.sellButton {
+  background-color: #9e0404;
+}
