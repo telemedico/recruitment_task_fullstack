@@ -1,5 +1,46 @@
 Fullstack Developer - Tasks
 ==========
+<!-- Zadanie rekrutacyjne
+Fullstack Developer @ Telemedi
+
+Zapraszamy Cię do wykonania zadania rekrutacyjnego 🙂 Napisany przez Ciebie kod będzie użyty wyłącznie w celach rekrutacyjnych i nie będzie wykorzystany nigdzie indziej.
+
+Przygotowaliśmy dla Ciebie repozytorium kodu, w którym znajdziesz: bazę kodową, na której należy się oprzeć,  podstawowe wskazówki jak zacząć pracę, jak również wytyczne do implementacji i sposobu oddania zadania.
+
+Repozytorium: https://github.com/telemedico/recruitment_task_fullstack
+
+Zadanie nr 1: tablica z kursami walut
+Wyobraźmy sobie, że dla pracowników sieci kantorów wymiany walut mamy przygotować prostą aplikację, prezentującą tabelę z informacjami o kursach kupna i sprzedaży waluty, dla wybranej przez użytkownika daty dziennej.
+
+Przygotuj zarówno frontend (React), jak i backend (PHP Symfony, w formie API), opierając się o istniejące już fragmenty kodu w repozytorium.
+
+Wskazówki:
+Kursy walut (kupno+sprzedaż) są ustalane względem średniego kursu waluty w NBP
+NBP udostępnia średnie kursy po API - pełna dokumentacja API: https://api.nbp.pl/ (kurs na dany dzień pojawia się w południe!)
+Przydatne mogą być endpointy:
+https://api.nbp.pl/api/exchangerates/tables/A/?format=json
+https://api.nbp.pl/api/exchangerates/rates/A/USD?format=json
+Oczekujemy implementacji API backendowego, więc przyjmujemy, że API NBP jest dostępne wyłącznie z poziomu serwera PHP, a nie przeglądarki.
+
+Wymagania:
+Wyświetlanie kursów walut nie powinno być pod głównym route aplikacji - należy zaimplementować link w menu kierujący do stworzonego przez siebie route’a, np http://telemedi-zadanie.localhost/exchange-rates
+Waluty, których kursy obsługuje kantor, to: euro (EUR), dolar amerykański (USD), korona czeska (CZK), rupia indonezyjska (IDR), real brazylijski (BRL)
+ew. zmiana listy walut obsługiwanych może wiązać się z koniecznością wprowadzenia niedużej zmiany w kodzie
+Kursy kupna i sprzedaży waluty jest ustalane względem kursów średnich NBP:
+dla walut EUR i USD kurs:
+kupna jest mniejszy o 0.05 PLN względem kursu średniego
+sprzedaży jest większy o 0.07 PLN względem kursu średniego
+dla pozostałych walut kurs:
+kupna jest pusty - tj. kantor nie prowadzi kupowania danej waluty
+sprzedaży jest większy o 0.15 PLN względem kursu średniego
+Dane mają prezentować kursy walut względem daty wybranej przez użytkownika (domyślnie ma być wybrana data dzisiejsza)
+Zmiana daty ma być możliwa dla użytkownika w UI (dopuszczamy daty od początku 2023 roku)
+Zmiana wybranej daty ma powodować sparametryzowanie linku, by można było przesłać komuś skopiowany link do widoku kursów z konkretnej daty.
+Na jednym ekranie/widoku, dla wszystkich walut obsługiwanych, mają być jednocześnie prezentowane następujące dane:
+kod waluty + jej nazwa
+kursy: NBP, kupna i sprzedaży z wybranej przez użytkownika daty (to najważniejsza wartość na stronie)
+kursy: NBP, kupna i sprzedaży z dnia dzisiejszego (jako punkt odniesienia do kursu historycznego)
+Sposób prezentacji danych zostawiamy Tobie - ale zależy nam na przejrzystym i przemyślanym UI, którego nie trzeba nikomu tłumaczyć, jak działa. -->
 
 ------------
 
