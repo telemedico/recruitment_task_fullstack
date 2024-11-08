@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    supported_currencies: ['EUR', 'USD', 'CZK', 'IDR', 'BRL']
 
 services:
     # default configuration for services in *this* file
@@ -18,6 +19,10 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+
+    App\Service\ExchangeRate\ExchangeRatesAPIService:
+        arguments:
+            $supportedCurrencies: '%supported_currencies%'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class

@@ -2,6 +2,8 @@
 
 import React, {Component} from 'react';
 import axios from 'axios';
+import { getBaseUrl } from '../config/config';
+
 
 class SetupCheck extends Component {
     constructor() {
@@ -9,17 +11,12 @@ class SetupCheck extends Component {
         this.state = { setupCheck: {}, loading: true};
     }
 
-    getBaseUrl() {
-        return 'http://telemedi-zadanie.localhost';
-    }
-
     componentDidMount() {
         this.checkApiSetup();
     }
 
     checkApiSetup() {
-        //const baseUrl = this.getBaseUrl();
-        const baseUrl = 'http://telemedi-zadanie.localhost';
+        const baseUrl = getBaseUrl();
         axios.get(baseUrl + `/api/setup-check?testParam=1`).then(response => {
             let responseIsOK = response.data && response.data.testParam === 1
             this.setState({ setupCheck: responseIsOK, loading: false})
@@ -31,7 +28,7 @@ class SetupCheck extends Component {
 
     render() {
         const loading = this.state.loading;
-        return(
+        return( 
             <div>
                 <section className="row-section">
                     <div className="container">

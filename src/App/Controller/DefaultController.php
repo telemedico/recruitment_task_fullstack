@@ -7,6 +7,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 
 class DefaultController extends AbstractController
@@ -19,17 +20,15 @@ class DefaultController extends AbstractController
         );
     }
 
-    public function setupCheck(Request $request): Response
+    public function setupCheck(Request $request): JsonResponse
     {
-        $responseContent = json_encode([
+        $data = [
             'testParam' => $request->get('testParam')
                 ? (int) $request->get('testParam')
                 : null
-        ]);
-        return new Response(
-            $responseContent,
-            Response::HTTP_OK,
-            ['Content-type' => 'application/json']
+        ];
+        return new JsonResponse(
+            $data
         );
     }
 
