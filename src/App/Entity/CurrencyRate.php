@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use DateTimeImmutable;
 use JsonSerializable;
 
 class CurrencyRate implements JsonSerializable
 {
-    /**
-     * @var DateTimeImmutable
-     */
-    private $date;
     /**
      * @var string
      */
@@ -30,18 +25,12 @@ class CurrencyRate implements JsonSerializable
      */
     private $sell;
 
-    public function __construct(DateTimeImmutable $date, string $code, float $mid, ?float $buy, ?float $sell)
+    public function __construct(string $code, float $mid, ?float $buy, ?float $sell)
     {
-        $this->date = $date;
         $this->code = $code;
         $this->mid = $mid;
         $this->buy = $buy;
         $this->sell = $sell;
-    }
-
-    public function getDate(): DateTimeImmutable
-    {
-        return $this->date;
     }
 
     public function getCode(): string
@@ -67,7 +56,6 @@ class CurrencyRate implements JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            'date' => $this->date,
             'code' => $this->code,
             'mid' => $this->mid,
             'buy' => $this->buy,

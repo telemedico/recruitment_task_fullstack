@@ -14,7 +14,9 @@ class ExchangeRates extends Component {
         this.state = {
             rates: {},
             loading: true,
-            date: urlDate && this.isValidDate(urlDate) ? urlDate : formattedToday
+            date: urlDate && this.isValidDate(urlDate) ? urlDate : formattedToday,
+            realChosenDate: null,
+            realTodayDate: null,
         };
     }
 
@@ -54,6 +56,8 @@ class ExchangeRates extends Component {
             this.setState({
                 ...this.state,
                 rates: response.data.rates,
+                realChosenDate: response.data.realChosenDate,
+                realTodayDate: response.data.realTodayDate,
                 loading: false
             });
         }).catch(function (error) {
@@ -121,6 +125,12 @@ class ExchangeRates extends Component {
                                                     })}
                                                     </tbody>
                                                 </table>
+                                                {this.state.realChosenDate != this.state.date &&
+                                                    <p>* {this.state.date} rate was taken from {this.state.realChosenDate}</p>
+                                                }
+                                                {this.state.realTodayDate != (new Date()).toLocaleDateString('en-CA') &&
+                                                    <p>* Actual Rate was taken from {this.state.realTodayDate}</p>
+                                                }
                                             </div>
                                         ) : (
                                             <h3 className={'text-error text-bold'}>Exchange rates are not available. Please try again later.</h3>

@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Config\RatesConfigProvider;
 use App\Entity\CurrencyRatesCollection;
 use App\Processor\RateProcessor;
+use App\RatesApi\CurrencyRatesApi;
 use App\RatesApi\Nbp\NbpCurrencyRatesApi;
 use DateTimeImmutable;
 
@@ -25,65 +26,47 @@ class ExchangeRatesService
      * @var RateProcessor
      */
     private $rateProcessor;
+    /**
+     * @var CurrencyRatesApi
+     */
+    private $currencyRatesApi;
 
     public function __construct(
         RatesConfigProvider $ratesConfigProvider,
         NbpCurrencyRatesApi $nbpCurrencyRates,
+        CurrencyRatesApi $currencyRatesApi,
         RateProcessor $rateProcessor
     ) {
         $this->ratesConfigProvider = $ratesConfigProvider;
         $this->nbpCurrencyRates = $nbpCurrencyRates;
         $this->rateProcessor = $rateProcessor;
+        $this->currencyRatesApi = $currencyRatesApi;
     }
 
-    public function getAllCurrencyRates(DateTimeImmutable $date): array
+    public function getCurrencyRates(DateTimeImmutable $date): array
     {
         $currencies = $this->ratesConfigProvider->getCurrencies();
 
-        $rates = $this->nbpCurrencyRates->get($currencies, $date);
-        $ratesToday = $this->nbpCurrencyRates->get($currencies, new DateTimeImmutable(), true);
+        $chosenCollection = $this->currencyRatesApi->get($currencies, $date);
+        $todayCollection = $this->currencyRatesApi->get($currencies, new DateTimeImmutable());
 
-        $chosenCollection = new CurrencyRatesCollection([], $date);
-        foreach ($rates as $rate) {
-            $chosenCollection->addCurrencyRate($this->rateProcessor->execute($rate, $date));
-        }
-
-        $todayCollection = new CurrencyRatesCollection([], $date);
-        foreach ($ratesToday as $rate) {
-            $todayCollection->addCurrencyRate($this->rateProcessor->execute($rate, new DateTimeImmutable()));
-        }
-
-//        $result = [[
-//            'chosen' => $chosenCollection,
-//            'today' => $todayCollection
-//        ]];
+        $result = [];
         foreach ($currencies as $currency) {
             $singularRate = [
                 'code' => $currency,
                 'name' => 'TBD',
             ];
 
-            foreach ($rates as $rate) {
-                if ($rate['code'] !== $currency) {
-                    continue;
-                }
-
-                $singularRate['chosenDate'] = $this->rateProcessor->execute($rate, $date);
-                break;
-            }
-
-            foreach ($ratesToday as $rate) {
-                if ($rate['code'] !== $currency) {
-                    continue;
-                }
-
-                $singularRate['todayDate'] = $this->rateProcessor->execute($rate, new DateTimeImmutable());
-                break;
-            }
+            $singularRate['chosenDate'] = $chosenCollection->getRateByCode($currency);
+            $singularRate['todayDate'] = $todayCollection->getRateByCode($currency);
 
             $result[] = $singularRate;
         }
 
-        return $result;
+        return [
+            'rates' => $result,
+            'realChosenDate' => $chosenCollection->getDate(),
+            'realTodayDate' => $todayCollection->getDate(),
+        ];
     }
 }

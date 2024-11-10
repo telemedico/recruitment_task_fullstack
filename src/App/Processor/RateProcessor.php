@@ -19,10 +19,9 @@ class RateProcessor
         $this->ratesConfigProvider = $ratesConfigProvider;
     }
 
-    public function execute(array $rate, \DateTimeImmutable $date): CurrencyRate
+    public function execute(array $rate): CurrencyRate
     {
         $currencyRate = new CurrencyRate(
-            $date,
             $rate['code'],
             $rate['mid'],
             $this->getBuyForRate($rate['code'], $rate['mid']),
@@ -45,6 +44,8 @@ class RateProcessor
 
             return $mid + $relativeRate['buy'];
         }
+
+        return null;
     }
 
     private function getSellForRate(string $code, float $mid): ?float
@@ -60,5 +61,7 @@ class RateProcessor
 
             return $mid + $relativeRate['sell'];
         }
+
+        return null;
     }
 }

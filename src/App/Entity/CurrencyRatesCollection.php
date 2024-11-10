@@ -18,6 +18,10 @@ class CurrencyRatesCollection implements JsonSerializable
      */
     private $date;
 
+    /**
+     * @param CurrencyRate[] $currencyRates
+     * @param DateTimeImmutable $date
+     */
     public function __construct(array $currencyRates, DateTimeImmutable $date)
     {
         $this->currencyRates = $currencyRates;
@@ -29,14 +33,28 @@ class CurrencyRatesCollection implements JsonSerializable
         $this->currencyRates[] = $currencyRate;
     }
 
+    /**
+     * @return CurrencyRate[]
+     */
     public function getCurrencyRates(): array
     {
         return $this->currencyRates;
     }
 
-    public function getDate(): DateTimeImmutable
+    public function getRateByCode(string $code): ?CurrencyRate
     {
-        return $this->date;
+        foreach ($this->currencyRates as $rate) {
+            if ($rate->getCode() === $code) {
+                return $rate;
+            }
+        }
+
+        return null;
+    }
+
+    public function getDate(): string
+    {
+        return $this->date->format('Y-m-d');
     }
 
     public function jsonSerialize(): array
