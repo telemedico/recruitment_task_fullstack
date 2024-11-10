@@ -8,6 +8,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    extra_hosts:
+      - host.docker.internal:host-gateway
     container_name: recruitment-webserver
     restart: unless-stopped
     ports:
