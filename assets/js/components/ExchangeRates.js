@@ -26,11 +26,18 @@ class ExchangeRates extends Component {
 
     handleDateChange = (event) => {
         const newDate = event.target.value;
-        this.setState({ date: newDate });
+
+        this.setState({
+            ...this.state,
+            date: newDate,
+            loading: true,
+        });
 
         const url = new URL(window.location);
         url.searchParams.set('date', newDate);
         window.history.pushState({}, '', url);
+
+        this.getRates(newDate);
     };
 
     getBaseUrl() {
@@ -38,16 +45,24 @@ class ExchangeRates extends Component {
     }
 
     componentDidMount() {
-        this.getRates();
+        this.getRates(this.state.date);
     }
 
-    getRates() {
+    getRates(date) {
         const baseUrl = 'http://telemedi-zadanie.localhost';
-        axios.get(baseUrl + `/api/exchange-rates?date=2024-11-08`).then(response => {
-            this.setState({ rates: response.data.rates, loading: false});
+        axios.get(baseUrl + `/api/exchange-rates?date=` + date).then(response => {
+            this.setState({
+                ...this.state,
+                rates: response.data.rates,
+                loading: false
+            });
         }).catch(function (error) {
             console.error(error);
-            this.setState({ rates: [], loading: false});
+            this.setState({
+                ...this.state,
+                rates: [],
+                loading: false
+            });
         });
     }
 
@@ -80,14 +95,14 @@ class ExchangeRates extends Component {
                                 ) : (
                                     <div className={'text-center'}>
                                         { rates.length ? (
-                                            <>
+                                            <div className={'currency-table'}>
                                                 <h3 className={'text-success text-bold'}></h3>
-                                                <table>
-                                                    <thead>
+                                                <table className={'table table-bordered table-hover table-striped'}>
+                                                    <thead className={'thead-light'}>
                                                         <tr>
                                                             <th colSpan="2">Currency</th>
-                                                            <th colSpan="3">Chosen Date</th>
-                                                            <th colSpan="3">Today</th>
+                                                            <th colSpan="3">{this.state.date}</th>
+                                                            <th colSpan="3">Actual Rate</th>
                                                         </tr>
                                                         <tr>
                                                             <th>Code</th>
@@ -96,8 +111,8 @@ class ExchangeRates extends Component {
                                                             <th>Buy</th>
                                                             <th>Sell</th>
                                                             <th>NBP</th>
-                                                            <th>BUY</th>
-                                                            <th>SELL</th>
+                                                            <th>Buy</th>
+                                                            <th>Sell</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -106,7 +121,7 @@ class ExchangeRates extends Component {
                                                     })}
                                                     </tbody>
                                                 </table>
-                                            </>
+                                            </div>
                                         ) : (
                                             <h3 className={'text-error text-bold'}>Exchange rates are not available. Please try again later.</h3>
                                         )}

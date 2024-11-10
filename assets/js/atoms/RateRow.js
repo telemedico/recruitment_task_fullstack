@@ -14,14 +14,14 @@ class RateRow extends Component {
 
         return(
             <tr>
-                <th className={'code'}>{code}</th>
-                <th className={'name'}>{name}</th>
-                <th className={'nbpRate'}>{chosenDate.mid ? chosenDate.mid.toFixed(6) : '-'}</th>
-                <th className={'buyRate'}>{chosenDate.buy ? chosenDate.buy.toFixed(6) : '-'}</th>
-                <th className={'sellRate'}>{chosenDate.sell ? chosenDate.sell.toFixed(6) : '-'}</th>
-                <th className={'nbpRate'}>{todayDate.mid ? todayDate.mid.toFixed(6) : '-'}</th>
-                <th className={'buyRate'}>{todayDate.buy ? todayDate.buy.toFixed(6) : '-'}</th>
-                <th className={'sellRate'}>{todayDate.sell ? todayDate.sell.toFixed(6) : '-'}</th>
+                <td>{code}</td>
+                <td>{name}</td>
+                <td>{chosenDate.mid ? chosenDate.mid.toFixed(6) : '-'}</td>
+                <td>{chosenDate.buy ? chosenDate.buy.toFixed(6) : '-'}</td>
+                <td>{chosenDate.sell ? chosenDate.sell.toFixed(6) : '-'}</td>
+                <td>{todayDate.mid ? todayDate.mid.toFixed(6) : '-'}</td>
+                <td>{todayDate.buy ? todayDate.buy.toFixed(6) : '-'}</td>
+                <td>{todayDate.sell ? todayDate.sell.toFixed(6) : '-'}</td>
             </tr>
         )
     }

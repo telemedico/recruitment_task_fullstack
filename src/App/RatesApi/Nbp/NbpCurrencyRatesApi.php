@@ -56,7 +56,7 @@ class NbpCurrencyRatesApi implements CurrencyRatesApiInterface
                 $date = new DateTimeImmutable($date->format('Y-m-d') . ' -1 DAY');
             }
             $response = $this->fetchRate($date);
-        } while (empty($response) && $tryEarlierDate && ++$tries < 3);
+        } while (empty($response) && $tryEarlierDate && ++$tries < 5);
 
         return $response[0]['rates'] ?? [];
     }

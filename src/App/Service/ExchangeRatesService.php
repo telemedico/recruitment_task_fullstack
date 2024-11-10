@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Config\RatesConfigProvider;
+use App\Entity\CurrencyRatesCollection;
 use App\Processor\RateProcessor;
 use App\RatesApi\Nbp\NbpCurrencyRatesApi;
 use DateTimeImmutable;
@@ -42,7 +43,20 @@ class ExchangeRatesService
         $rates = $this->nbpCurrencyRates->get($currencies, $date);
         $ratesToday = $this->nbpCurrencyRates->get($currencies, new DateTimeImmutable(), true);
 
-        $result = [];
+        $chosenCollection = new CurrencyRatesCollection([], $date);
+        foreach ($rates as $rate) {
+            $chosenCollection->addCurrencyRate($this->rateProcessor->execute($rate, $date));
+        }
+
+        $todayCollection = new CurrencyRatesCollection([], $date);
+        foreach ($ratesToday as $rate) {
+            $todayCollection->addCurrencyRate($this->rateProcessor->execute($rate, new DateTimeImmutable()));
+        }
+
+//        $result = [[
+//            'chosen' => $chosenCollection,
+//            'today' => $todayCollection
+//        ]];
         foreach ($currencies as $currency) {
             $singularRate = [
                 'code' => $currency,
@@ -54,7 +68,7 @@ class ExchangeRatesService
                     continue;
                 }
 
-                $singularRate['chosenDate'] = $this->rateProcessor->execute($rate);
+                $singularRate['chosenDate'] = $this->rateProcessor->execute($rate, $date);
                 break;
             }
 
@@ -63,7 +77,7 @@ class ExchangeRatesService
                     continue;
                 }
 
-                $singularRate['todayDate'] = $this->rateProcessor->execute($rate);
+                $singularRate['todayDate'] = $this->rateProcessor->execute($rate, new DateTimeImmutable());
                 break;
             }
 

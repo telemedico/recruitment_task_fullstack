@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Processor;
 
 use App\Config\RatesConfigProvider;
+use App\Entity\CurrencyRate;
 
 class RateProcessor
 {
@@ -18,15 +19,17 @@ class RateProcessor
         $this->ratesConfigProvider = $ratesConfigProvider;
     }
 
-    public function execute(array $rate): array
+    public function execute(array $rate, \DateTimeImmutable $date): CurrencyRate
     {
-        $processed = [
-            'mid' => $rate['mid'],
-            'buy' => $this->getBuyForRate($rate['code'], $rate['mid']),
-            'sell' => $this->getSellForRate($rate['code'], $rate['mid']),
-        ];
+        $currencyRate = new CurrencyRate(
+            $date,
+            $rate['code'],
+            $rate['mid'],
+            $this->getBuyForRate($rate['code'], $rate['mid']),
+            $this->getSellForRate($rate['code'], $rate['mid'])
+        );
 
-        return $processed;
+        return $currencyRate;
     }
 
     private function getBuyForRate(string $code, float $mid): ?float
