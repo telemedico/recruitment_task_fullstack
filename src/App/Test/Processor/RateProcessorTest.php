@@ -1,76 +1,81 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Test\Processor;
 
 use App\Config\RatesConfigProvider;
 use App\Processor\RateProcessor;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Controller\ArgumentResolverInterface;
-use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
-use Symfony\Component\Routing;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class RateProcessorTest extends TestCase
 {
-    public function testHappyPath()
+    private const RELATIVE_RATES = [
+        [
+            'currencies' => ['EUR', 'USD'],
+            'buy' => -0.05,
+            'sell' => 0.07,
+        ],
+        [
+            'currencies' => ['CZK', 'IDR', 'BRL'],
+            'buy' => null,
+            'sell' => 0.15,
+        ]
+    ];
+
+    /**
+     * @var RatesConfigProvider|MockObject
+     */
+    private $ratesConfigProvider;
+
+    /**
+     * @var RateProcessor
+     */
+    private $rateProcessor;
+
+    public function setUp(): void
     {
-        $ratesConfigProvider = $this->createMock(RatesConfigProvider::class);
-
-        $ratesConfigProvider
+        $this->ratesConfigProvider = $this->createMock(RatesConfigProvider::class);
+        $this->ratesConfigProvider
             ->method('getRelativeRates')
-            ->willReturn([
-                    [
-                        'currencies' => ['EUR', 'USD'],
-                        'buy' => -0.05,
-                        'sell' => 0.07,
-                    ],
-                    [
-                        'currencies' => ['CZK', 'IDR', 'BRL'],
-                        'buy' => null,
-                        'sell' => 0.15,
-                    ]
-            ]);
+            ->willReturn(self::RELATIVE_RATES);
 
-        $rateProcessor = new RateProcessor($ratesConfigProvider);
+        $this->rateProcessor = new RateProcessor($this->ratesConfigProvider);
 
-        $returned = $rateProcessor->execute([
+        parent::setUp();
+    }
+
+    public function testBuySellRate(): void
+    {
+        $returned = $this->rateProcessor->execute([
             'code' => 'EUR',
             'mid' => 1.0
         ]);
 
-        self::assertEquals($returned->getBuy(), 0.95);
-        self::assertEquals($returned->getSell(), 1.07);
+        self::assertEquals(0.95, $returned->getBuy());
+        self::assertEquals(1.07, $returned->getSell());
     }
 
-    public function testNotFoundHandling()
+    public function testBuyOnlyRate(): void
     {
-        $framework = $this->getFrameworkForException(new ResourceNotFoundException());
+        $returned = $this->rateProcessor->execute([
+            'code' => 'CZK',
+            'mid' => 1.0
+        ]);
 
-        $response = $framework->handle(new Request());
-
-        $this->assertEquals(404, $response->getStatusCode());
+        self::assertEquals(null, $returned->getBuy());
+        self::assertEquals(1.15, $returned->getSell());
     }
 
-    private function getFrameworkForException($exception)
+    public function testNotHandledRate(): void
     {
-        $matcher = $this->createMock(Routing\Matcher\UrlMatcherInterface::class);
-        // use getMock() on PHPUnit 5.3 or below
-        // $matcher = $this->getMock(Routing\Matcher\UrlMatcherInterface::class);
+        $returned = $this->rateProcessor->execute([
+            'code' => 'JPY',
+            'mid' => 0.027
+        ]);
 
-        $matcher
-            ->expects($this->once())
-            ->method('match')
-            ->will($this->throwException($exception))
-        ;
-        $matcher
-            ->expects($this->once())
-            ->method('getContext')
-            ->will($this->returnValue($this->createMock(Routing\RequestContext::class)))
-        ;
-        $controllerResolver = $this->createMock(ControllerResolverInterface::class);
-        $argumentResolver = $this->createMock(ArgumentResolverInterface::class);
-
-        return new Framework($matcher, $controllerResolver, $argumentResolver);
+        self::assertEquals(null, $returned->getBuy());
+        self::assertEquals(null, $returned->getSell());
     }
 }

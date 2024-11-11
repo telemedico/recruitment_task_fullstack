@@ -6,25 +6,28 @@ namespace App\RatesApi;
 
 use App\Entity\CurrencyRatesCollection;
 use App\Processor\RateProcessor;
-use App\RatesApi\Nbp\NbpCurrencyRatesApi;
+use App\RatesApi\ApiProvider\CurrencyRatesApiInterface;
 use DateTimeImmutable;
 
+/**
+ * todo: Idea for future - use more than one api, to have fallback (use f.e. chain of responsibility)
+ */
 class CurrencyRatesApi
 {
     /**
-     * @var NbpCurrencyRatesApi
+     * @var CurrencyRatesApiInterface
      */
-    private $nbpCurrencyRatesApi;
+    private $api;
     /**
      * @var RateProcessor
      */
     private $rateProcessor;
 
     public function __construct(
-        NbpCurrencyRatesApi $nbpCurrencyRatesApi,
+        CurrencyRatesApiInterface $api,
         RateProcessor $rateProcessor
     ) {
-        $this->nbpCurrencyRatesApi = $nbpCurrencyRatesApi;
+        $this->api = $api;
         $this->rateProcessor = $rateProcessor;
     }
 
@@ -36,7 +39,7 @@ class CurrencyRatesApi
                 $date = new DateTimeImmutable($date->format('Y-m-d') . ' -1 DAY');
             }
 
-            $rates = $this->nbpCurrencyRatesApi->get($currencySymbols, $date);
+            $rates = $this->api->get($currencySymbols, $date);
         } while (empty($rates) && ++$tries < 5);
 
         $collection = new CurrencyRatesCollection([], $date);

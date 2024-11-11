@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\RatesApi\Nbp;
+namespace App\RatesApi\ApiProvider;
 
 use App\Config\RatesConfigProvider;
-use App\RatesApi\CurrencyRatesApiInterface;
 use DateTimeImmutable;
-use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -62,7 +60,7 @@ class NbpCurrencyRatesApi implements CurrencyRatesApiInterface
 
     private function restrictCurrencies(array $rates): array
     {
-        $currencies = $this->ratesConfigProvider->getCurrencies();
+        $currencies = $this->ratesConfigProvider->getCurrencyCodes();
 
         return array_filter($rates, function ($rate) use ($currencies) {
             return in_array($rate['code'], $currencies);

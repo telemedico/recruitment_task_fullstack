@@ -9,7 +9,7 @@ class ExchangeRates extends Component {
         const urlParams = new URLSearchParams(window.location.search);
         const urlDate = urlParams.get('date');
         const today = new Date();
-        const formattedToday = today.toISOString().split('T')[0]; // format YYYY-MM-DD
+        const formattedToday = today.toISOString().split('T')[0];
 
         this.state = {
             rates: {},
@@ -78,7 +78,7 @@ class ExchangeRates extends Component {
                 <section className="row-section">
                     <div className="container">
                         <div className="row mt-5">
-                            <div className="col-md-8 offset-md-2">
+                            <div className="col-md-10 offset-md-1">
                                 <h2 className="text-center">Exchange Rates</h2>
 
                                 <div>
@@ -88,6 +88,7 @@ class ExchangeRates extends Component {
                                         id="date-input"
                                         value={this.state.date}
                                         min="2023-01-01"
+                                        max={(new Date()).toISOString().split('T')[0]}
                                         onChange={this.handleDateChange}
                                     />
                                 </div>

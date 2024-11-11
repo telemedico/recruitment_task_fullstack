@@ -5,10 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Config\RatesConfigProvider;
-use App\Entity\CurrencyRatesCollection;
-use App\Processor\RateProcessor;
 use App\RatesApi\CurrencyRatesApi;
-use App\RatesApi\Nbp\NbpCurrencyRatesApi;
 use DateTimeImmutable;
 
 class ExchangeRatesService
@@ -19,46 +16,35 @@ class ExchangeRatesService
     private $ratesConfigProvider;
 
     /**
-     * @var NbpCurrencyRatesApi
-     */
-    private $nbpCurrencyRates;
-    /**
-     * @var RateProcessor
-     */
-    private $rateProcessor;
-    /**
      * @var CurrencyRatesApi
      */
     private $currencyRatesApi;
 
     public function __construct(
         RatesConfigProvider $ratesConfigProvider,
-        NbpCurrencyRatesApi $nbpCurrencyRates,
-        CurrencyRatesApi $currencyRatesApi,
-        RateProcessor $rateProcessor
+        CurrencyRatesApi $currencyRatesApi
     ) {
         $this->ratesConfigProvider = $ratesConfigProvider;
-        $this->nbpCurrencyRates = $nbpCurrencyRates;
-        $this->rateProcessor = $rateProcessor;
         $this->currencyRatesApi = $currencyRatesApi;
     }
 
     public function getCurrencyRates(DateTimeImmutable $date): array
     {
-        $currencies = $this->ratesConfigProvider->getCurrencies();
+        $currencies = $this->ratesConfigProvider->getCurrencyCodes();
+        $currenciesToNames = $this->ratesConfigProvider->getCurrenciesAndNames();
 
         $chosenCollection = $this->currencyRatesApi->get($currencies, $date);
         $todayCollection = $this->currencyRatesApi->get($currencies, new DateTimeImmutable());
 
         $result = [];
-        foreach ($currencies as $currency) {
+        foreach ($currenciesToNames as $currencyCode => $currencyName) {
             $singularRate = [
-                'code' => $currency,
-                'name' => 'TBD',
+                'code' => $currencyCode,
+                'name' => $currencyName,
             ];
 
-            $singularRate['chosenDate'] = $chosenCollection->getRateByCode($currency);
-            $singularRate['todayDate'] = $todayCollection->getRateByCode($currency);
+            $singularRate['chosenDate'] = $chosenCollection->getRateByCode($currencyCode);
+            $singularRate['todayDate'] = $todayCollection->getRateByCode($currencyCode);
 
             $result[] = $singularRate;
         }

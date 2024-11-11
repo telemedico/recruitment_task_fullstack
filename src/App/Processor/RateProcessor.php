@@ -21,14 +21,12 @@ class RateProcessor
 
     public function execute(array $rate): CurrencyRate
     {
-        $currencyRate = new CurrencyRate(
+        return new CurrencyRate(
             $rate['code'],
             $rate['mid'],
             $this->getBuyForRate($rate['code'], $rate['mid']),
             $this->getSellForRate($rate['code'], $rate['mid'])
         );
-
-        return $currencyRate;
     }
 
     private function getBuyForRate(string $code, float $mid): ?float

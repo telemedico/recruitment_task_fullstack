@@ -1,6 +1,6 @@
 <?php
 
-namespace App\RatesApi;
+namespace App\RatesApi\ApiProvider;
 
 use DateTimeImmutable;
 

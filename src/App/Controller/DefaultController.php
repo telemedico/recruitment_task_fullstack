@@ -24,6 +24,7 @@ class DefaultController extends AbstractController
                 ? (int)$request->get('testParam')
                 : null
         ]);
+
         return new Response(
             $responseContent,
             Response::HTTP_OK,

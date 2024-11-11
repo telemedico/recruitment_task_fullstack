@@ -16,9 +16,10 @@ class Home extends Component {
                         <ul className="navbar-nav mr-auto">
                             <li className="nav-item">
                                 <Link className={"nav-link"} to={"/setup-check"}> React Setup Check </Link>
+                            </li>
+                            <li className="nav-item">
                                 <Link className={"nav-link"} to={"/exchange-rates"}> Exchange Rates </Link>
                             </li>
-
                         </ul>
                     </div>
                 </nav>
