@@ -1,0 +1,11 @@
+services:
+  Symfony\Component\HttpClient\MockHttpClient:
+    public: true
+    arguments:
+      - [ ]
+
+  App\Infrastruture\Api\NBP\NbpApi:
+    arguments:
+      $client: '@Symfony\Component\HttpClient\MockHttpClient'
+      $logger: '@logger'
+      $baseUrl: '%env(API_NBP_BASE_URL)%'
