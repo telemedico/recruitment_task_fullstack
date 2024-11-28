@@ -22,7 +22,7 @@ export default ({ onDateChange, value }) => {
                         onChange={(e) => onDateChange(e.target.value)}
                     />
                     <small id="dateHelp" className="form-text text-muted">Wybierz datę, dla której kurs chcesz
-                        zobaczyć</small>
+                        zobaczyć. Kurs na dziś pojawi się po godzinie 12:00</small>
 
                 </div>
             </form>
