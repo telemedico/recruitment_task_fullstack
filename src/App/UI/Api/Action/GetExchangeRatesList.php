@@ -6,7 +6,9 @@ namespace App\UI\Api\Action;
 
 use App\Application\ExchangeRatesServiceInterface;
 use App\Application\Query\GetExchangeRatesListQuery;
+use App\UI\Api\Exception\ValidateRequestException;
 use App\UI\Api\Presenter\GetExchangeRatesListResponsePresenter;
+use App\UI\Api\Validator\GetExchangeRatesListValidator;
 use DateTimeImmutable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +22,9 @@ final class GetExchangeRatesList
         $this->exchangeRatesService = $exchangeRatesService;
     }
 
+    /**
+     * @throws ValidateRequestException
+     */
     public function __invoke(Request $request): Response
     {
         $date = DateTimeImmutable::createFromFormat(
@@ -27,6 +32,7 @@ final class GetExchangeRatesList
             $request->get('requestDate', (new DateTimeImmutable())->format('Y-m-d'))
         );
 
+        GetExchangeRatesListValidator::validate($date);
 
         $currencies = $this->exchangeRatesService->getList(
             new GetExchangeRatesListQuery($date)

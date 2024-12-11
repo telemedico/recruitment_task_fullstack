@@ -10,6 +10,7 @@ use App\Domain\ExchangeRateRepositoryInterface;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 final class GetExchangeRatesListActionTest extends WebTestCase
 {
@@ -43,7 +44,7 @@ final class GetExchangeRatesListActionTest extends WebTestCase
         $this->mockExternalApi($client);
 
         $client->request('GET', '/api/v1/exchange-rates', [
-            'requestDate' => '2020-01-01',
+            'requestDate' => '2024-01-01',
         ]);
 
         self::assertResponseIsSuccessful();
@@ -61,6 +62,19 @@ final class GetExchangeRatesListActionTest extends WebTestCase
         self::assertEquals(5.15, $content[2]['exchangeRate']['sellRate']);
     }
 
+    public function test_get_error_when_try_get_exchange_rates_list_with_invalid_date(): void
+    {
+        $client = self::createClient();
+
+        $this->mockExternalApi($client);
+
+        $client->request('GET', '/api/v1/exchange-rates', [
+            'requestDate' => (new DateTimeImmutable())->modify('+5 days')->format('Y-m-d'),
+        ]);
+
+        self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
+    }
+
     private function mockExternalApi(KernelBrowser $client): void
     {
         $mock = $this->createMock(ExchangeRateRepositoryInterface::class);
@@ -68,7 +82,7 @@ final class GetExchangeRatesListActionTest extends WebTestCase
         $client->getContainer()->set(ExchangeRateRepositoryInterface::class, $mock);
 
         $mock->method('getList')->willReturnCallback(function (DateTimeImmutable $date) {
-            if ($date->format('Y-m-d') === '2020-01-01') {
+            if ($date->format('Y-m-d') === '2024-01-01') {
                 return [
                     new ExchangeRate(new Currency('USD', 'Dolar Amerykański'), 2.0),
                     new ExchangeRate(new Currency('EUR', 'Euro'), 4.5),
