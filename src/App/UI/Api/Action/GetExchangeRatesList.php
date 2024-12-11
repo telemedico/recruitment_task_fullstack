@@ -24,8 +24,9 @@ final class GetExchangeRatesList
     {
         $date = DateTimeImmutable::createFromFormat(
             'Y-m-d',
-            $request->request->get('requestDate', (new DateTimeImmutable())->format('Y-m-d'))
+            $request->get('requestDate', (new DateTimeImmutable())->format('Y-m-d'))
         );
+
 
         $currencies = $this->exchangeRatesService->getList(
             new GetExchangeRatesListQuery($date)

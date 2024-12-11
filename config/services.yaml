@@ -32,6 +32,9 @@ services:
         autowire: true
         tags: ['controller.service_arguments']
 
+    App\Domain\ExchangeRateRepositoryInterface:
+        public: true
+
     App\Infrastructure\Repository\NbpApiExchangeRateRepository:
         autowire: true
         arguments:
