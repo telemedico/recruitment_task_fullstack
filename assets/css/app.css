@@ -1,3 +1,60 @@
 body {
     background-color: lightgray;
 }
+
+.exchange-rates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #ccc;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    min-height: 300px;
+    border: 1px solid #ccc;
+}
+
+.table-header {
+    display: contents;
+    font-weight: bold;
+    text-align: center;
+}
+
+.header-cell {
+    background: #333;
+    color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.table-row {
+    display: contents;
+}
+
+.table-cell {
+    background: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.table-row:nth-child(odd) .table-cell {
+    background: #f9f9f9;
+}
+
+.table-row:nth-child(even) .table-cell {
+    background: #ffffff;
+}
+
+.no-data-message {
+    font-size: 18px;
+    font-weight: bold;
+    color: #666;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}

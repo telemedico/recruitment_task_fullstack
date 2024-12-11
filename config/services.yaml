@@ -33,6 +33,7 @@ services:
         tags: ['controller.service_arguments']
 
     App\Domain\ExchangeRateRepositoryInterface:
+        alias: App\Infrastructure\Repository\NbpApiExchangeRateRepository
         public: true
 
     App\Infrastructure\Repository\NbpApiExchangeRateRepository:

@@ -3,6 +3,7 @@
 import React, {Component} from 'react';
 import {Route, Redirect, Switch, Link} from 'react-router-dom';
 import SetupCheck from "./SetupCheck";
+import ExchangeRatesList from "./ExchangeRatesList";
 
 class Home extends Component {
 
@@ -17,12 +18,17 @@ class Home extends Component {
                                 <Link className={"nav-link"} to={"/setup-check"}> React Setup Check </Link>
                             </li>
 
+                            <li className="nav-item">
+                                <Link className={"nav-link"} to={"/exchange-rates"}> Exchange Rates </Link>
+                            </li>
+
                         </ul>
                     </div>
                 </nav>
                 <Switch>
-                    <Redirect exact from="/" to="/setup-check" />
+                    <Redirect exact from="/" to="/setup-check"/>
                     <Route path="/setup-check" component={SetupCheck} />
+                    <Route path="/exchange-rates/:date?" component={ExchangeRatesList} />
                 </Switch>
             </div>
         )
