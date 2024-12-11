@@ -2,16 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\UI\Web;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
 class DefaultController extends AbstractController
 {
-
     public function index(): Response
     {
         return $this->render(
@@ -26,12 +24,11 @@ class DefaultController extends AbstractController
                 ? (int) $request->get('testParam')
                 : null
         ]);
+
         return new Response(
             $responseContent,
             Response::HTTP_OK,
             ['Content-type' => 'application/json']
         );
     }
-
-
 }

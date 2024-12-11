@@ -21,10 +21,20 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/App/Controller/'
+    App\UI\Web\:
+        resource: '../src/App/UI/Web/'
         autowire: true
         tags: ['controller.service_arguments']
 
+
+    App\UI\Api\Action\:
+        resource: '../src/App/UI/Api/Action/'
+        autowire: true
+        tags: ['controller.service_arguments']
+
+    App\Infrastructure\Repository\NbpApiExchangeRateRepository:
+        autowire: true
+        arguments:
+            $nbpApiUrl: '%env(NBP_API_URL)%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
