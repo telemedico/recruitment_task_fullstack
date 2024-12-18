@@ -1,32 +1,56 @@
-// ./assets/js/components/Home.js
-
-import React, {Component} from 'react';
-import {Route, Redirect, Switch, Link} from 'react-router-dom';
+import React, { useState } from "react";
+import { Route, Redirect, Switch, NavLink } from "react-router-dom";
 import SetupCheck from "./SetupCheck";
+import ExchangeRates from "./ExchangeRates";
 
-class Home extends Component {
+const Home = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
 
-    render() {
-        return (
-            <div>
-                <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-                    <Link className={"navbar-brand"} to={"#"}> Telemedi Zadanko </Link>
-                    <div id="navbarText">
-                        <ul className="navbar-nav mr-auto">
-                            <li className="nav-item">
-                                <Link className={"nav-link"} to={"/setup-check"}> React Setup Check </Link>
-                            </li>
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
-                        </ul>
-                    </div>
-                </nav>
-                <Switch>
-                    <Redirect exact from="/" to="/setup-check" />
-                    <Route path="/setup-check" component={SetupCheck} />
-                </Switch>
-            </div>
-        )
-    }
-}
+  return (
+    <div>
+      <nav className="navbar">
+        <NavLink className="navbar-brand" to="/" exact>
+          Telemedi Zadanko
+        </NavLink>
+        <button
+          className="burger"
+          onClick={toggleMenu}
+          aria-label="Toggle navigation"
+        >
+          ☰
+        </button>
+        <div className={`nav-links ${menuOpen ? "open" : ""}`}>
+          <NavLink
+            className="nav-link"
+            activeClassName="active"
+            to="/setup-check"
+            onClick={() => setMenuOpen(false)}
+          >
+            React Setup Check
+          </NavLink>
+          <NavLink
+            className="nav-link"
+            activeClassName="active"
+            to="/exchange-rates"
+            onClick={() => setMenuOpen(false)}
+          >
+            Exchange Rates
+          </NavLink>
+        </div>
+      </nav>
+      <div className="container">
+        <Switch>
+          <Redirect exact from="/" to="/setup-check" />
+          <Route path="/setup-check" component={SetupCheck} />
+          <Route path="/exchange-rates" component={ExchangeRates} />
+        </Switch>
+      </div>
+    </div>
+  );
+};
 
 export default Home;
