@@ -52,7 +52,7 @@ Wytyczne dot. implementacji
 **Głównym celem implementacji powinno być pokazanie się z dobrej strony jako programista, czyli nie ma jednego słusznego podejścia! :)**
 
   1. W ramach implementacji nie należy dodawać nowych paczek do composer’a/npm’a. Zachęcamy do korzystania z tych, które już są dodane.
-  1. Development należy prowadzić pod kątem kompatybilności PHP z wersją 7.2.5 (zgodnie z composer.json)
+  1. Development należy prowadzić pod kątem kompatybilności PHP z wersją 8.2 (zgodnie z composer.json)
   1. Napisanie testów jest elementem oceny.
   1. **Ocenie podlegać będzie całość podejścia do zadania.**
 

@@ -15,7 +15,7 @@ class DefaultController extends AbstractController
     public function index(): Response
     {
         return $this->render(
-            'exchange_rates/app-root.html.twig'
+            'app-root.html.twig'
         );
     }
 
